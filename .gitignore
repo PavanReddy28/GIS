@@ -4,6 +4,7 @@
 geodjango_setup.bat
 
 __pyache__
+/geodjango/.env
 
 #OS junk files
 [Tt]humbs.db
