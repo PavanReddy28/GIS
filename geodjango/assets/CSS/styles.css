@@ -31,3 +31,9 @@
 .main_container{
   margin-right: 75px;
 }
+
+.map {
+  height: 100%;
+  width: (100%-75px);
+}
+
