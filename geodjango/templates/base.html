@@ -7,49 +7,130 @@
 
     <!-------------------------------Bootstrap-------------------------------->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <link rel="stylesheet" href="../static/CSS/styles.css">
     <title>World</title>
+
+    <!-----------------------------Inline Styles------------------------------------>
+    <style>
+
+      /*Navigation*/
+
+      .menu{
+          position:fixed;
+          top:0;
+          right:0;
+          width: 50px;
+          height: 100%;
+          background: #eeeeee;
+          font-size: 16px;
+          font-family: sans-serif;
+      }
+
+      .menu_item{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 0;
+        text-decoration: none;
+        color: #666;
+      }
+
+      .menu_item i{
+        font-size: 2.2em;
+      }
+
+      /*Navigation End*/
+
+      /* Main Body */
+      .main_container{
+        margin-right: 75px;
+      }
+
+    </style>
+
 </head>
 <body>
 
-    <nav class="navbar bg-light">
+  <!----------------------------------Navigation-------------------------------------->
+  <nav class="menu">
+    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#clustering" aria-controls="offcanvasScrolling" class="menu_item">
+      <i class="material-icons">apps</i>
+    </a>
+    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#change_detection" aria-controls="offcanvasScrolling" class="menu_item">
+      <i class="material-icons">compare</i>
+    </a>
+    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#upload" aria-controls="offcanvasScrolling" class="menu_item">
+      <i class="material-icons">cloud_upload</i>
+    </a>
+    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#download" aria-controls="offcanvasScrolling" class="menu_item">
+      <i class="material-icons">cloud_download</i>
+    </a>
+    <a href="" class="menu_item">
+      <i class="material-icons">add</i>
+    </a> 
+  </nav> 
+ 
+  <div class="Upload">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="upload" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel1">Upload</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p>Try scrolling the rest of the page to see this option in action.</p>
+      </div>
+    </div>
+  </div>
 
-        <!-- Links -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link 1</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link 2</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link 3</a>
-          </li>
-        </ul>
-      
-      </nav>
+  <div class="clustering">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="clustering" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel2">Clustering</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p>Try scrolling the rest of the page to see this option in action.</p>
+      </div>
+    </div>
+  </div>
 
+  <div class="change_detection">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="change_detection" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel3">Change Detection</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p>Try scrolling the rest of the page to see this option in action.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="download">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="download" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel3">Download</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p>Try scrolling the rest of the page to see this option in action.</p>
+      </div>
+    </div>
+  </div>
+
+  <!----------------------------------Navigation END-------------------------------------->
+
+
+  <div class="main_container">
+    
     {% block content %}
 
     {% endblock %}
 
-    <footer>
-        <ul class="nav justify-content-center">
-            <li class="nav-item">
-            <a class="nav-link active" href="#">Active</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-        </ul>
-    </footer>
+  </div>
 
     <!-------------------------------Bootstrap-------------------------------->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
