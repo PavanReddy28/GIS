@@ -9,6 +9,7 @@ psycopg2 = "*"
 pipwin = "*"
 geoserver-rest = "*"
 gdal = "*"
+django-environ = "*"
 
 [dev-packages]
 
