@@ -7,53 +7,65 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!---------------------Openlayers----------------------------->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+
+    <!--------------------------OpenLayer Switcher----------------->
+    <link rel="stylesheet" href="http://localhost:8085/webgis/libs/ol-layerswitcher-master/dist/ol-layerswitcher.css" />
+    <script src="http://localhost:8085/webgis/libs/ol-layerswitcher-master/dist/ol-layerswitcher.js"></script>
+
+    <!---------------------Security----------------------------->
+	<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Hr-LGjhntoAPQmvveUjIAh3PkVcj7r-h3CAFv9FqC6yRjOwyv00AOMM6-5yT0CZzlnDRArnx_Xdzv9IhyJ0qavlOVVm9_awf1X5OZqZ7iMa_eapgH4jld58C14PZi6fXJp0Fk6HeYGTg4aqrmzSYkkBLMLk3uylTb4v-bVcXpZRzjHiaGEZ0dqHqj_lLp41i2dyHGwz-P28NyQ0nxUxCDFlma5ydPX5LKstMszLOK0F3nxh5g9IsjhB6-n_SSViLXD6KMFFZQgNdmm2DZ1OFAQQXDGsnV_3vSk3npncUOBYZSFTKoQgSARUFzK6U5xRQ0oXRhwkSjbS1dsXxYDfwhsoDwtQAZCi7ebQhZX0maap2giUfnVnAfHEXBW9R0dRYmNDlKQMrD6faifEWN542KXz8D1OlF6umy7sPJMfZjUMlU5By1SITR8I8vbLq1H4UOrEmRp4bJAlsluSVz7NjIQ" charset="UTF-8"></script><script src="http://localhost:8085/webgis/libs/v6.5.0/build/ol.js"></script>
+	  
+
     <!-------------------------------Bootstrap-------------------------------->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!---------------------Openlayers----------------------------->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-    <style>
-      
-    </style>
+    <!------------------------JQuery--------------------------->
+	<script src="http://localhost:8085/webgis/libs/jquery.min.js"></script>
+	<link rel="stylesheet" href="http://localhost:8085/webgis/libs/jquery-ui-1.12.1/jquery-ui.css">
+    <script src="http://localhost:8085/webgis/libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="http://localhost:8085/webgis/libs/jquery-ui-1.12.1/jquery-ui.js"></script>
+
     <!---------------------__CSS Links----------------------->
     <link rel="stylesheet" href="{% static 'CSS/styles.css'%}">
     <title>GIS-World</title>
 </head>
 <body>
 
-  <!----------------------------------Navigation-------------------------------------->
-  <nav class="menu">
-    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#clustering" aria-controls="offcanvasScrolling" class="menu_item">
-      <i class="material-icons">apps</i>
-    </a>
-    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#change_detection" aria-controls="offcanvasScrolling" class="menu_item">
-      <i class="material-icons">compare</i>
-    </a>
-    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#upload" aria-controls="offcanvasScrolling" class="menu_item">
-      <i class="material-icons">cloud_upload</i>
-    </a>
-    <a type="button" data-bs-toggle="offcanvas" data-bs-target="#download" aria-controls="offcanvasScrolling" class="menu_item">
-      <i class="material-icons">cloud_download</i>
-    </a>
-    <a href="" class="menu_item">
-      <i class="material-icons">add</i>
-    </a> 
-  </nav> 
+    <!----------------------------------Navigation-------------------------------------->
+    <nav class="menu">
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#clustering" aria-controls="offcanvasScrolling" class="menu_item">
+            <i class="material-icons">apps</i>
+        </a>
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#change_detection" aria-controls="offcanvasScrolling" class="menu_item">
+            <i class="material-icons">compare</i>
+        </a>
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#upload" aria-controls="offcanvasScrolling" class="menu_item">
+            <i class="material-icons">cloud_upload</i>
+        </a>
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#download" aria-controls="offcanvasScrolling" class="menu_item">
+            <i class="material-icons">cloud_download</i>
+        </a>
+        <a href="" class="menu_item">
+            <i class="material-icons">add</i>
+        </a> 
+    </nav> 
 
-  <!----------------------------------Navigation END-------------------------------------->
+    <!----------------------------------Navigation END-------------------------------------->
 
+    <!-------------------------Main Contenet (Index.html) ----------------------->
+    <div class="main_container">
+      
+      {% block content %}
 
-  <div class="main_container">
-    
-    {% block content %}
+      {% endblock %}
 
-    {% endblock %}
+    </div>
 
-  </div>
-
-    <!-------------------------------Bootstrap-------------------------------->
+    <!-------------------------------Bootstrap JS-------------------------------->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
