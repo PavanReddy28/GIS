@@ -25,40 +25,30 @@
 </head>
 <body>
 
-      <!----------------------------Openlayers implementation----------------->
-    <!-- <h2>My Map</h2> -->
-    <div id="map" class="map"></div>
-    <script type="text/javascript">
-        var map = new ol.Map({
-        target: 'map',
-        layers: [
-            new ol.layer.Tile({
-            source: new ol.source.OSM()
-            })
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([37.41, 8.82]),
-            zoom: 4
-        })
-        });
-    </script>
+    
 
     <!----------------------------------Navigation-------------------------------------->
     <nav class="menu">
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#upload" aria-controls="offcanvasScrolling" class="menu_item">
+            <i class="material-icons">add</i>
+        </a>
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#layers" aria-controls="offcanvasScrolling" class="menu_item">
+            <i class="material-icons">view_list</i>
+        </a>
         <a type="button" data-bs-toggle="offcanvas" data-bs-target="#clustering" aria-controls="offcanvasScrolling" class="menu_item">
             <i class="material-icons">apps</i>
         </a>
         <a type="button" data-bs-toggle="offcanvas" data-bs-target="#change_detection" aria-controls="offcanvasScrolling" class="menu_item">
             <i class="material-icons">compare</i>
         </a>
-        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#upload" aria-controls="offcanvasScrolling" class="menu_item">
-            <i class="material-icons">cloud_upload</i>
-        </a>
         <a type="button" data-bs-toggle="offcanvas" data-bs-target="#download" aria-controls="offcanvasScrolling" class="menu_item">
-            <i class="material-icons">cloud_download</i>
+            <i class="material-icons">file_download</i>
         </a>
+        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#user_login" aria-controls="offcanvasScrolling" class="menu_item">
+            <i class="material-icons">account_circle</i>
+        </a> 
         <a href="" class="menu_item">
-            <i class="material-icons">add</i>
+            <i class="material-icons">settings</i>
         </a> 
     </nav> 
 

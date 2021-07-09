@@ -14,17 +14,38 @@
     </div> -->
 
 <!------------------Navigation Offcanvas------------------------->
-<div class="Upload">
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="upload" aria-labelledby="offcanvasScrollingLabel">
+
+  <!-----------------------------1. Layers------------------------->
+  <div class="Layers">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="layers" aria-labelledby="offcanvasScrollingLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel1">Upload</h5>
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel1">Layers</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <p>Try scrolling the rest of the page to see this option in action.</p>
+        <div class="list-group">
+          {% for map in db_layers %}
+            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="list">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <p class="mb-1">{{map.description}}</p>
+              {% if map.color_ramps %}
+              <small>Color Map : {{map.color_ramps}}</small>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </div>
+        <div class="d-grid gap-2" style="margin:3vh">
+          <Button class="btn btn-primary" href="#" type="submit">Display</Button>
+          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
+        </div>
       </div>
     </div>
   </div>
+
+  <!----------------------------------------2. Clustering --------------------------------------->
 
   <div class="clustering">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="clustering" aria-labelledby="offcanvasScrollingLabel">
@@ -33,22 +54,157 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
       <div class="offcanvas-body">
-        <p>Try scrolling the rest of the page to see this option in action.</p>
+        <div class="list-group">
+          {% for map in db_layers %}              
+            <a href="clustering/{{map.id}}" class="list-group-item list-group-item-action" data-bs-toggle="list">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <p class="mb-1">{{map.description}}</p>
+              {% if map.color_ramps %}
+              <small>Color Map : {{map.color_ramps}}</small>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </div>
+
+        <div class="d-grid gap-2" style="margin:3vh">
+          <Button class="btn btn-primary" href="#" type="submit">Display</Button>
+          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
+        </div>
       </div>
     </div>
   </div>
 
+  <!------------------------------------3.Change Detection --------------------------------->
+
   <div class="change_detection">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="change_detection" aria-labelledby="offcanvasScrollingLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel3">Change Detection</h5>
+        <h4 class="offcanvas-title" id="offcanvasScrollingLabel3">Change Detection</h4>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <p>Try scrolling the rest of the page to see this option in action.</p>
-      </div>
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Choose Layer 1</h5>
+        <div class="list-group">
+          {% for map in db_layers %}              
+              <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </a>
+            {% endfor %}
+        </div>
+
+        <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
+        <div class="list-group">
+          {% for map in db_layers %}              
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <p class="mb-1">{{map.description}}</p>
+              {% if map.color_ramps %}
+              <small>Color Map : {{map.color_ramps}}</small>
+              {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="d-grid gap-2" style="margin:3vh">
+          <Button class="btn btn-primary" href="changedetection/{{map.id}}" type="submit">Display Change</Button>
+          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
+        </div>
+      </div>      
     </div>
   </div>
+
+  <!----------------------------------------------4. Upload Form------------------------------------------->
+
+  <div class="Upload">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="upload" aria-labelledby="offcanvasScrollingLabel">
+
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel1">Upload</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="offcanvas-body" style="margin: 2vh">
+        <form class="needs-validation" novalidate>
+          <div class="form-floating row mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="Map Name" required>
+            <label for="floatingInput">Map Name</label>
+            <div class="invalid-feedback">
+              Please add a Map Name.
+            </div>
+          </div>
+        
+          <div class="form-floating row mb-3">
+            <textarea class="form-control" placeholder="Map Description" id="floatingTextarea2" style="height: 100px"></textarea>
+            <label for="floatingTextarea2">Description</label>
+            <div class="invalid-feedback">
+              Please add a Map Name.
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <p class="lead"><strong>Choose a Color Ramp</strong></p>
+            <!-- <h6 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh"></h5> -->
+            <select class="form-select" id="floatingSelect" size="5" aria-label="size 5 select example">
+              <option selected>None</option>
+              {% for k in colors %}
+              <option value="{{k.0}}">{{k.1}}</option>
+              {% endfor %}
+            </select>            
+          </div>
+
+          <div class="row mb-3">
+            <p class="lead"><strong>Add a Raster File (.GeoTiff)</strong></p>
+            <input class="form-control" type="file" id="formFile" required>
+            <div class="invalid-feedback">
+              Please add a Raster File location.
+            </div>
+          </div>
+        
+          <div class="row mb-3 ">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </div>
+        </form>
+        <script>
+          (function () {
+          'use strict'
+        
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+          var forms = document.querySelectorAll('.needs-validation')
+        
+          // Loop over them and prevent submission
+          Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+              form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                  event.preventDefault()
+                  event.stopPropagation()
+                }
+        
+                form.classList.add('was-validated')
+              }, false)
+            })
+          })()
+        </script>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!--------------------------------------------5. Downloading ------------------------------------->
 
   <div class="download">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="download" aria-labelledby="offcanvasScrollingLabel">
@@ -57,11 +213,113 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <p>Try scrolling the rest of the page to see this option in action.</p>
+
+        <!-----------------------------1. Download Layers ----------------------------->
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Layers</h5>
+        <div class="list-group">
+          {% for map in db_layers %}              
+              <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </a>
+            {% endfor %}
+        </div>
+
+        <!---------------------------------2. Download Clustering Output------------------------->
+
+        <h5 class="text-muted" style="margin: 2vh">Clustering Output</h5>
+        <div class="list-group">
+          {% for map in db_layers %}              
+              <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </a>
+            {% endfor %}
+        </div>
+
+        <!--------------------------3. Download Change Detection Output---------------------------------------->
+        <h5 class="text-muted" style="margin:2vh;">Change Detection Output</h5>
+        <div class="list-group">
+          {% for map in db_layers %}              
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <p class="mb-1">{{map.description}}</p>
+              {% if map.color_ramps %}
+              <small>Color Map : {{map.color_ramps}}</small>
+              {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="d-grid gap-2" style="margin:3vh">
+          <Button class="btn btn-primary" href="#" type="submit">Download</Button>
+          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!---------------------------------6. User Login---------------------------->
+
+  <div class="user_login">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="user_login" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel2">User Login</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
+      </div>
+      <div class="offcanvas-body">
+        
       </div>
     </div>
   </div>
 
 
+<!----------------------------Openlayers implementation----------------->
+<!-- <h2>My Map</h2> -->
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+      var map = new ol.Map({
+      target: 'map',
+      layers: [
+          new ol.layer.Tile({
+          source: new ol.source.OSM()
+          })
+      ],
+      view: new ol.View({
+          center: ol.proj.fromLonLat([37.41, 8.82]),
+          zoom: 4
+      })
+      });
+  </script>
+
+<!------------------------------------Toast------------------------------->
+  <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 11">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" >
+      <div class="toast-header">
+        <!-- <img src="..." class="rounded me-2" alt="..."> -->
+        <strong class="me-auto">Success</strong>
+        <small>11 mins ago</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Clustering is succesful.
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
