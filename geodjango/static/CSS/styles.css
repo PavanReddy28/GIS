@@ -32,7 +32,22 @@
   margin-right: 50px;
 }
 
-.map {
+/* .map {
   height: 100vh;
   width: 100%;
+} */
+
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+html, body, #map {
+  height: 100vh;
+}
+
+.lorem {
+  font-style: italic;
+  color: #AAA;
 }
