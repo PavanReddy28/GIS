@@ -11,10 +11,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
 
-    <!--------------------------OpenLayer Switcher----------------->
-    <link rel="stylesheet" href="http://localhost:8085/webgis/libs/ol-layerswitcher-master/dist/ol-layerswitcher.css" />
-    <script src="http://localhost:8085/webgis/libs/ol-layerswitcher-master/dist/ol-layerswitcher.js"></script>
-
     <!---------------------Security----------------------------->
 	<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=Hr-LGjhntoAPQmvveUjIAh3PkVcj7r-h3CAFv9FqC6yRjOwyv00AOMM6-5yT0CZzlnDRArnx_Xdzv9IhyJ0qavlOVVm9_awf1X5OZqZ7iMa_eapgH4jld58C14PZi6fXJp0Fk6HeYGTg4aqrmzSYkkBLMLk3uylTb4v-bVcXpZRzjHiaGEZ0dqHqj_lLp41i2dyHGwz-P28NyQ0nxUxCDFlma5ydPX5LKstMszLOK0F3nxh5g9IsjhB6-n_SSViLXD6KMFFZQgNdmm2DZ1OFAQQXDGsnV_3vSk3npncUOBYZSFTKoQgSARUFzK6U5xRQ0oXRhwkSjbS1dsXxYDfwhsoDwtQAZCi7ebQhZX0maap2giUfnVnAfHEXBW9R0dRYmNDlKQMrD6faifEWN542KXz8D1OlF6umy7sPJMfZjUMlU5By1SITR8I8vbLq1H4UOrEmRp4bJAlsluSVz7NjIQ" charset="UTF-8"></script><script src="http://localhost:8085/webgis/libs/v6.5.0/build/ol.js"></script>
 	  
@@ -23,17 +19,29 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!------------------------JQuery--------------------------->
-	<script src="http://localhost:8085/webgis/libs/jquery.min.js"></script>
-	<link rel="stylesheet" href="http://localhost:8085/webgis/libs/jquery-ui-1.12.1/jquery-ui.css">
-    <script src="http://localhost:8085/webgis/libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
-    <script src="http://localhost:8085/webgis/libs/jquery-ui-1.12.1/jquery-ui.js"></script>
-
     <!---------------------__CSS Links----------------------->
     <link rel="stylesheet" href="{% static 'CSS/styles.css'%}">
     <title>GIS-World</title>
 </head>
 <body>
+
+      <!----------------------------Openlayers implementation----------------->
+    <!-- <h2>My Map</h2> -->
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+            source: new ol.source.OSM()
+            })
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([37.41, 8.82]),
+            zoom: 4
+        })
+        });
+    </script>
 
     <!----------------------------------Navigation-------------------------------------->
     <nav class="menu">
