@@ -1,5 +1,6 @@
 /Pipfile
 /Pipfile.lock
+/env.txt
 
 geodjango_setup.bat
 

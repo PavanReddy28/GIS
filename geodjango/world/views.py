@@ -2,20 +2,18 @@ from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
 from .models import Sentinel
 import sys
-import json
 import environ
 
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
 
-# Create your views here.
 def index(request):
     geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     db_layers = Sentinel.objects.all()
     colors = Sentinel.COLOR_RAMPS_CHOICES
-    return render(request, "index.html", {'db_layers': db_layers, 'colors': colors})
+    return render(request, "index.html", {'db_layers': db_layers, 'cluster_layers': db_layers, 'change_layers': db_layers, 'colors': colors})
 
 def cluster(request, id):
 
