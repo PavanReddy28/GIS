@@ -86,9 +86,10 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
       <div class="offcanvas-body">
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Original Layers</h5>
         <div class="list-group">
-          {% for map in db_layers %}              
-            <a href="clustering/{{map.id}}" class="list-group-item list-group-item-action" data-bs-toggle="list">
+          {% for map in db_layers %}
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list">
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ map.name }}</h5>
                 <small> {{ map.uploaded_date }} </small>
@@ -101,10 +102,28 @@
           {% endfor %}
         </div>
 
-        <div class="d-grid gap-2" style="margin:3vh">
-          <Button class="btn btn-primary" href="#" type="submit">Display</Button>
+        <div class="d-grid gap-2" style="margin:2vh">
+          <Button class="btn btn-primary" href="#" type="submit">Perform Clustering</Button>
           <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
         </div>
+
+        <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
+        <div class="list-group" id="wmsClusterLayers">
+          {% for map in cluster_layers %}
+            <a class="list-group-item list-group-item-action">
+              <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <p class="mb-1">{{map.description}}</p>
+              {% if map.color_ramps %}
+              <small>Color Map : {{map.color_ramps}}</small>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </div>
+
       </div>
     </div>
   </div>
@@ -118,6 +137,24 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
+
+        <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
+        <div class="list-group" id="wmsChangeLayers">
+          {% for map in change_layers %}
+            <a class="list-group-item list-group-item-action">
+              <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <p class="mb-1">{{map.description}}</p>
+              {% if map.color_ramps %}
+              <small>Color Map : {{map.color_ramps}}</small>
+              {% endif %}
+            </a>
+          {% endfor %}
+        </div>
+
         <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Choose Layer 1</h5>
         <div class="list-group">
           {% for map in db_layers %}              
@@ -151,9 +188,10 @@
         </div>
 
         <div class="d-grid gap-2" style="margin:3vh">
-          <Button class="btn btn-primary" href="changedetection/{{map.id}}" type="submit">Display Change</Button>
+          <Button class="btn btn-primary" href="changedetection/{{map.id}}" type="submit">Detect Change</Button>
           <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
         </div>
+        
       </div>      
     </div>
   </div>
@@ -170,6 +208,7 @@
 
       <div class="offcanvas-body" style="margin: 2vh">
         <form class="needs-validation" novalidate>
+          <p class="lead"><strong>Name*</strong></p>
           <div class="form-floating row mb-3">
             <input type="text" class="form-control" id="floatingInput" placeholder="Map Name" required>
             <label for="floatingInput">Map Name</label>
@@ -178,6 +217,7 @@
             </div>
           </div>
         
+          <p class="lead"><strong>Description</strong></p>
           <div class="form-floating row mb-3">
             <textarea class="form-control" placeholder="Map Description" id="floatingTextarea2" style="height: 100px"></textarea>
             <label for="floatingTextarea2">Description</label>
@@ -198,7 +238,7 @@
           </div>
 
           <div class="row mb-3">
-            <p class="lead"><strong>Add a Raster File (.GeoTiff)</strong></p>
+            <p class="lead"><strong>Add a Raster File (.GeoTiff)*</strong></p>
             <input class="form-control" type="file" id="formFile" required>
             <div class="invalid-feedback">
               Please add a Raster File location.
@@ -209,30 +249,8 @@
             <button class="btn btn-primary" type="submit">Upload</button>
           </div>
         </form>
-        <!-- <script>
-          (function () {
-          'use strict'
-        
-          // Fetch all the forms we want to apply custom Bootstrap validation styles to
-          var forms = document.querySelectorAll('.needs-validation')
-        
-          // Loop over them and prevent submission
-          Array.prototype.slice.call(forms)
-            .forEach(function (form) {
-              form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                  event.preventDefault()
-                  event.stopPropagation()
-                }
-        
-                form.classList.add('was-validated')
-              }, false)
-            })
-          })()
-        </script> -->
 
       </div>
-
     </div>
   </div>
 

@@ -88,9 +88,10 @@ console.log(triggerWMS);
 triggerWMS.forEach((wmsLayerElement) => {
     console.log(wmsLayerElement.value);
     var wmsLayer = new ol.layer.Tile({
-        title:wmsLayerElement.value,
+        title: wmsLayerElement.value,
+        visible:false,
         source: new ol.source.TileWMS({
-            url: 'https://127.0.0.1:8085/geoserver/App/wms',
+            url: 'http://127.0.0.1:8085/geoserver/App/wms',
             params: {'LAYERS': 'App:'+wmsLayerElement.value, 'VERSION':'1.1.0', 'TILED':true},
             serverType: 'geoserver',
             projection:'ESP:32643',
@@ -105,7 +106,16 @@ triggerWMS.forEach((wmsLayerElement) => {
 
 triggerWMS.forEach((wmsLayerElement)=>{
     wmsLayerElement.addEventListener('change', (event) => {
-        console.log(this.value);
+        wmsLayerElementValue = wmsLayerElement.value;
+        wmsLayers.getLayers().forEach((element, index, array)=>{
+            console.log("Before", wmsLayerElementValue, element.get('title'), element.get('visible'));
+            let wmsLayerTitle = element.get('title');
+            if(wmsLayerTitle === wmsLayerElementValue)
+            {
+                element.setVisible(!element.get('visible'));
+            }
+            console.log("After", wmsLayerElementValue, element.get('title'), element.get('visible'));
+        })       
         
     })
 })
@@ -118,10 +128,107 @@ wmsLayerElement.addEventListener('change', function (event) {
 })
 */
 
+// -------------------------------------WMS Cluster Layers--------------------------------
+//------------------------------WMS Cluster functionality-------------------------------
+
+var triggerClusterWMS = document.querySelectorAll('#wmsClusterLayers > a > input[type=checkbox]')
+const wmsClusterLayers = new ol.layer.Group({
+    title: 'Overlay',
+    fold: 'open',
+    combine: false,
+    layers: [],
+})
+console.log(triggerClusterWMS);
+
+// ---------------------------------Layer Switcher Cluster Functionality-WMS-----------------------------
+triggerClusterWMS.forEach((wmsLayerElement) => {
+    console.log(wmsLayerElement.value);
+    var wmsLayer = new ol.layer.Tile({
+        title: wmsLayerElement.value,
+        visible:false,
+        source: new ol.source.TileWMS({
+            url: 'http://127.0.0.1:8085/geoserver/App/wms',
+            params: {'LAYERS': 'App:'+wmsLayerElement.value, 'VERSION':'1.1.0', 'TILED':true},
+            serverType: 'geoserver',
+            projection:'ESP:32643',
+            opacity: 0.5,
+        })
+        // new ol.source.TileWMS({
+        //     url:'http://127.0.0.1:8085/geoserver/App/wms?service=WMS&version=1.1.0&request=GetMap&layers=App%3AHyderabad&bbox=799980.0%2C1890240.0%2C909780.0%2C2000040.0&width=768&height=768&srs=EPSG%3A32643&styles=&format=application%2Fopenlayers3'
+        // })
+    });
+    wmsLayers.getLayers().push(wmsLayer);
+});
+
+triggerClusterWMS.forEach((wmsLayerElement)=>{
+    wmsLayerElement.addEventListener('change', (event) => {
+        wmsLayerElementValue = wmsLayerElement.value;
+        wmsLayers.getLayers().forEach((element, index, array)=>{
+            console.log("Before", wmsLayerElementValue, element.get('title'), element.get('visible'));
+            let wmsLayerTitle = element.get('title');
+            if(wmsLayerTitle === wmsLayerElementValue)
+            {
+                element.setVisible(!element.get('visible'));
+            }
+            console.log("After", wmsLayerElementValue, element.get('title'), element.get('visible'));
+        })       
+        
+    })
+})
+
+// -------------------------------------WMS Change Layers--------------------------------
+//------------------------------WMS Change functionality-------------------------------
+
+var triggerChangeWMS = document.querySelectorAll('#wmsChangeLayers > a > input[type=checkbox]')
+const wmsChangeLayers = new ol.layer.Group({
+    title: 'Overlay',
+    fold: 'open',
+    combine: false,
+    layers: [],
+})
+console.log(triggerChangeWMS);
+
+// ---------------------------------Layer Switcher Functionality-WMS-----------------------------
+triggerChangeWMS.forEach((wmsLayerElement) => {
+    console.log(wmsLayerElement.value);
+    var wmsLayer = new ol.layer.Tile({
+        title: wmsLayerElement.value,
+        visible:false,
+        source: new ol.source.TileWMS({
+            url: 'http://127.0.0.1:8085/geoserver/App/wms',
+            params: {'LAYERS': 'App:'+wmsLayerElement.value, 'VERSION':'1.1.0', 'TILED':true},
+            serverType: 'geoserver',
+            projection:'ESP:32643',
+            opacity: 0.5,
+        })
+        // new ol.source.TileWMS({
+        //     url:'http://127.0.0.1:8085/geoserver/App/wms?service=WMS&version=1.1.0&request=GetMap&layers=App%3AHyderabad&bbox=799980.0%2C1890240.0%2C909780.0%2C2000040.0&width=768&height=768&srs=EPSG%3A32643&styles=&format=application%2Fopenlayers3'
+        // })
+    });
+    wmsLayers.getLayers().push(wmsLayer);
+});
+
+triggerChangeWMS.forEach((wmsLayerElement)=>{
+    wmsLayerElement.addEventListener('change', (event) => {
+        wmsLayerElementValue = wmsLayerElement.value;
+        wmsLayers.getLayers().forEach((element, index, array)=>{
+            console.log("Before", wmsLayerElementValue, element.get('title'), element.get('visible'));
+            let wmsLayerTitle = element.get('title');
+            if(wmsLayerTitle === wmsLayerElementValue)
+            {
+                element.setVisible(!element.get('visible'));
+            }
+            console.log("After", wmsLayerElementValue, element.get('title'), element.get('visible'));
+        })       
+        
+    })
+})
+
+
 // -------------------------------------Original Map Function-----------------------------
 var view = new ol.View({
     center: ol.proj.fromLonLat([78.96, 20.59]),
-    zoom: 4,
+    zoom: 3,
     enableRotation: false
 });
 
@@ -130,7 +237,7 @@ var map = new ol.Map({
     layers: [],
     render: 'canvas',
     view: view,
-    controls: ol.control.defaults({ attributionOptions: { collapsible: false }}).extend([
+    controls: ol.control.defaults({ attributionOptions: { collapsible: true }}).extend([
         new ol.control.Zoom(),
         new ol.control.ZoomSlider(),
         new ol.control.Rotate(),
@@ -140,7 +247,7 @@ var map = new ol.Map({
             projection: 'EPSG:4326'
         })
     ]),
-    layers: [baseLayerGroup, wmsLayers],
+    layers: [baseLayerGroup, wmsLayers, wmsClusterLayers, wmsChangeLayers],
 });
 
 /*
