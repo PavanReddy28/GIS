@@ -207,7 +207,7 @@
       </div>
 
       <div class="offcanvas-body" style="margin: 2vh">
-        <form action="upload" method="POST" enctype="multipart/form-data" onsubmit="onFormSubmit(event)" class="needs-validation" novalidate>
+        <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" novalidate>
           {% csrf_token %}
 
           <p class="lead"><strong>Name*</strong></p>
@@ -269,6 +269,9 @@
           <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
         </div>
         <div class="modal-body">
+          <div id="alert-box-dialog" style="display: none;">
+            <div class="alert alert-success" id="alert-box-content" role="alert"></div>
+          </div>
           <p class="lead" id="d_mapName"><strong></strong></p>
           <p class="lead" id="d_desc"><strong></strong></p>
           <p class="lead" id="d_cRamp"><strong></strong></p>
@@ -280,8 +283,13 @@
             <p class="lead" id="progress_text"><strong></strong></p>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+        <div class="modal-footer" id="abort_button" style="display:block;">
+          <button type="button" id="abort" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+        <div class="modal-footer" id="success_button" style="display:none;">
+          <a href="/">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+          </a>
         </div>
       </div>
     </div>

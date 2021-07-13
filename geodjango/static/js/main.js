@@ -21,39 +21,80 @@
 
 //-----------------------------------------Uploading Raster Layer -------------------------------
 function onFormSubmit(event){
-    // event.preventDefault();
-    // var myOffcanvas = document.getElementById('upload');
-    // var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-    // bsOffcanvas.hide();
+    // const alert = document.getElementbyId('alert-box')
+    // const name = document.getElementById("mName")
+    // const desc = document.getElementById("desc")
+    // const c_ramp = document.getElementById("cRamp")
+    // const raster = document.getElementById("raster")
+    // const footer = document.getElementById("")
+    event.preventDefault();
+    var myOffcanvas = document.getElementById('upload');
+    myOffcanvas.classList.replace("show", "hide")
 
-    // var formData=new FormData();
-    // formData.append("mapName",document.getElementById("mName").value);
-    // formData.append("desc",document.getElementById("desc").value);
-    // formData.append("c_ramp",document.getElementById("cRamp").value);
-    // formData.append("raster",document.getElementById("raster").files[0]);
+    var formData=new FormData();
+    formData.append("csrfmiddlewaretoken", document.getElementsByName('csrfmiddlewaretoken')[0].value)
+    formData.append("mapName",document.getElementById("mName").value);
+    formData.append("desc",document.getElementById("desc").value);
+    formData.append("c_ramp",document.getElementById("cRamp").value);
+    formData.append("raster",document.getElementById("raster").files[0]);
     
-    // document.getElementById("d_mapName").innerHTML = document.getElementById("mName").value;
-    // document.getElementById("d_desc").innerHTML = document.getElementById("desc").value;
-    // document.getElementById("d_cRamp").innerHTML = document.getElementById("cRamp").value;
-    // // document.getElementById("d_raster").innerHTML = document.getElementById("raster").files[0];
+    document.getElementById("d_mapName").innerHTML = "Name : " + document.getElementById("mName").value;
+    document.getElementById("d_desc").innerHTML = "Description : " + document.getElementById("desc").value;
+    document.getElementById("d_cRamp").innerHTML = "Color Ramp : " + document.getElementById("cRamp").value;
+    // document.getElementById("d_raster").innerHTML = document.getElementById("raster").files[0];
 
-    // console.log(formData);
+    console.log(formData);
 
-    // var xhr=new XMLHttpRequest();
-    // xhr.open("POST","http://127.0.0.1:8000/upload",true);
-    // xhr.upload.addEventListener("progress",function (ev) {
-    //    if(ev.lengthComputable){
-    //         var percentage=(ev.loaded/ev.total*100|0);
-    //         // document.getElementById("progress_div").style["display"]="block";
-    //         document.getElementById("progress_bar").style["width"]=""+percentage+"%";
-    //         document.getElementById("progress_bar").innerHTML=""+percentage+"%";
-    //         document.getElementById("progress_text").innerHTML="Uploaded : "+parseInt(ev.loaded/1000000)+"/"+parseInt(ev.total/1000000)+" MB";
-    //         console.log("Uploaded : "+ev.loaded);
-    //         console.log("TOTAL : "+ev.total);
-    //         console.log(percentage);
-    //    }
-    // });
-    // xhr.send(formData);
+    var xhr=new XMLHttpRequest();
+    xhr.open("POST","http://127.0.0.1:8000/upload",true);
+    xhr.upload.addEventListener("progress", (ev) => {
+        if(ev.lengthComputable){
+             var percentage=(ev.loaded/ev.total*100|0);
+             // document.getElementById("progress_div").style["display"]="block";
+             document.getElementById("progress_bar").style["width"]=""+percentage+"%";
+             document.getElementById("progress_bar").innerHTML=""+percentage+"%";
+             document.getElementById("progress_text").innerHTML="Uploaded : "+parseInt(ev.loaded/1000000)+"/"+parseInt(ev.total/1000000)+" MB";
+             console.log("Uploaded : "+ev.loaded);
+             console.log("TOTAL : "+ev.total);
+             console.log(percentage);
+        }
+
+        var btn = document.getElementById("abort")
+        btn.addEventListener('click', ()=> {
+            document.getElementById("success_button").style["display"] = "block";
+            document.getElementById("progress_bar").classList.add("bg-danger");
+            document.getElementById("abort_button").style["display"] = "none";
+            document.getElementById("progress_bar").innerHTML=""  
+            xhr.abort()
+            // setTimeout(()=>{
+            //     document.getElementById("mName").innerHTML = "";
+            //     document.getElementById("desc").innerHTML = "";
+            //     document.getElementById("cRamp").innerHTML = "";
+            //     document.getElementById("raster").innerHTML = "";
+            // }, 2000)
+        })
+     });
+    xhr.upload.addEventListener("load", (ev) => {
+        console.log("Page is loaded")
+        document.getElementById("abort_button").style["display"] = "none";
+        document.getElementById("success_button").style["display"] = "block";
+        document.getElementById("alert-box-content").innerHTML = "Successfully Uploaded";
+        document.getElementById("alert-box-dialog").style["display"] = "block"; 
+        document.getElementById("progress_bar").classList.remove("bg-danger");
+        document.getElementById("progress_bar").innerHTML=""  
+        document.getElementById("progress_text").innerHTML=""
+    });
+    xhr.upload.addEventListener("error", (ev)=>{
+
+    });
+    xhr.upload.addEventListener("abort", (ev)=>{
+        document.getElementById("mName").innerHTML = "";
+        document.getElementById("desc").innerHTML = "";
+        document.getElementById("cRamp").innerHTML = "";
+        document.getElementById("raster").innerHTML = "";
+    });
+
+    xhr.send(formData);
 
 }
 

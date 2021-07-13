@@ -1,4 +1,3 @@
-from .forms import UploadForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
@@ -12,12 +11,11 @@ env = environ.Env()
 environ.Env.read_env()
 
 def index(request):
-    form = UploadForm(request.POST or None, request.FILES or None)
     geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     db_layers = Sentinel.objects.all()
     colors = Sentinel.COLOR_RAMPS_CHOICES
-    context = {'form':form, 'db_layers': db_layers, 'cluster_layers': db_layers, 'change_layers': db_layers, 'colors': colors}
+    context = {'db_layers': db_layers, 'cluster_layers': db_layers, 'change_layers': db_layers, 'colors': colors}
     return render(request, "index.html", context)
 
 def cluster(request, id):
@@ -62,17 +60,20 @@ def change(request, id):
 
     return redirect("/", {'db_layers': db_layers, 'colors': colors})
 
-@csrf_exempt
+# @csrf_exempt
 def upload(request):
     print(request.POST)
     print(request.FILES)
-    if request.method=='POST' and request.FILES['raster']:
-        name = request.POST['mapName']
-        desc = request.POST['desc']
-        c_ramp = request.POST['cRamp']
-        raster = request.FILES['raster']
-
+    # if request.method=='POST' and request.FILES['raster']:
+    name = request.POST['mapName']
+    desc = request.POST['desc']
+    c_ramp = request.POST['c_ramp']
+    raster = request.FILES['raster']
+    if c_ramp=='None':
+        file = Sentinel.objects.create(name=name, description=desc, color_ramps=None, file=raster)
+        file.save()
+    else:
         file = Sentinel.objects.create(name=name, description=desc, color_ramps=c_ramp, file=raster)
         file.save()
-
+    print(name, desc, c_ramp, raster)
     return HttpResponse('Uploaded')
