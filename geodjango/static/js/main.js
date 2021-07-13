@@ -19,6 +19,46 @@
       })
     })()
 
+//-----------------------------------------Uploading Raster Layer -------------------------------
+function onFormSubmit(event){
+    // event.preventDefault();
+    // var myOffcanvas = document.getElementById('upload');
+    // var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+    // bsOffcanvas.hide();
+
+    // var formData=new FormData();
+    // formData.append("mapName",document.getElementById("mName").value);
+    // formData.append("desc",document.getElementById("desc").value);
+    // formData.append("c_ramp",document.getElementById("cRamp").value);
+    // formData.append("raster",document.getElementById("raster").files[0]);
+    
+    // document.getElementById("d_mapName").innerHTML = document.getElementById("mName").value;
+    // document.getElementById("d_desc").innerHTML = document.getElementById("desc").value;
+    // document.getElementById("d_cRamp").innerHTML = document.getElementById("cRamp").value;
+    // // document.getElementById("d_raster").innerHTML = document.getElementById("raster").files[0];
+
+    // console.log(formData);
+
+    // var xhr=new XMLHttpRequest();
+    // xhr.open("POST","http://127.0.0.1:8000/upload",true);
+    // xhr.upload.addEventListener("progress",function (ev) {
+    //    if(ev.lengthComputable){
+    //         var percentage=(ev.loaded/ev.total*100|0);
+    //         // document.getElementById("progress_div").style["display"]="block";
+    //         document.getElementById("progress_bar").style["width"]=""+percentage+"%";
+    //         document.getElementById("progress_bar").innerHTML=""+percentage+"%";
+    //         document.getElementById("progress_text").innerHTML="Uploaded : "+parseInt(ev.loaded/1000000)+"/"+parseInt(ev.total/1000000)+" MB";
+    //         console.log("Uploaded : "+ev.loaded);
+    //         console.log("TOTAL : "+ev.total);
+    //         console.log(percentage);
+    //    }
+    // });
+    // xhr.send(formData);
+
+}
+
+
+
 //------------------------------------Base Layer IMplementation----------------------------------
 
 const baselayerOSM = new ol.layer.Tile({

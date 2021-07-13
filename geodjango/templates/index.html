@@ -207,10 +207,12 @@
       </div>
 
       <div class="offcanvas-body" style="margin: 2vh">
-        <form class="needs-validation" novalidate>
+        <form action="upload" method="POST" enctype="multipart/form-data" onsubmit="onFormSubmit(event)" class="needs-validation" novalidate>
+          {% csrf_token %}
+
           <p class="lead"><strong>Name*</strong></p>
           <div class="form-floating row mb-3">
-            <input type="text" class="form-control" id="floatingInput" placeholder="Map Name" required>
+            <input type="text" class="form-control" name='mapName' id='mName' placeholder="Map Name" required>
             <label for="floatingInput">Map Name</label>
             <div class="invalid-feedback">
               Please add a Map Name.
@@ -219,7 +221,7 @@
         
           <p class="lead"><strong>Description</strong></p>
           <div class="form-floating row mb-3">
-            <textarea class="form-control" placeholder="Map Description" id="floatingTextarea2" style="height: 100px"></textarea>
+            <textarea class="form-control" name='desc' id='desc' placeholder="Map Description" style="height: 100px"></textarea>
             <label for="floatingTextarea2">Description</label>
             <div class="invalid-feedback">
               Please add a Map Name.
@@ -229,27 +231,58 @@
           <div class="row mb-3">
             <p class="lead"><strong>Choose a Color Ramp</strong></p>
             <!-- <h6 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh"></h5> -->
-            <select class="form-select" id="floatingSelect" size="5" aria-label="size 5 select example">
+            <select class="form-select" name='cRamp' id="cRamp" size="5" aria-label="size 5 select example">
               <option selected>None</option>
               {% for k in colors %}
+              {% if k.0 == 'RdGy' %}
+              <option value="{{k.0}}" selected>{{k.1}}</option>
+              {% else %}
               <option value="{{k.0}}">{{k.1}}</option>
+              {% endif %}
               {% endfor %}
             </select>            
           </div>
 
           <div class="row mb-3">
             <p class="lead"><strong>Add a Raster File (.GeoTiff)*</strong></p>
-            <input class="form-control" type="file" id="formFile" required>
+            <input class="form-control" name='raster' type="file" id="raster" required>
             <div class="invalid-feedback">
               Please add a Raster File location.
             </div>
           </div>
         
           <div class="row mb-3 ">
-            <button class="btn btn-primary" type="submit">Upload</button>
+            <button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload</button>
           </div>
         </form>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Uploading Raster File</h5>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+        <div class="modal-body">
+          <p class="lead" id="d_mapName"><strong></strong></p>
+          <p class="lead" id="d_desc"><strong></strong></p>
+          <p class="lead" id="d_cRamp"><strong></strong></p>
+          <!-- <p class="lead" id="d_raster"><strong></strong></p> -->
+          <div class="progress" id="progress_div">
+            <div class="progress-bar" id="progress_bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">25%</div>
+          </div>
+          <div class="row form-group">
+            <p class="lead" id="progress_text"><strong></strong></p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
