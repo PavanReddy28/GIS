@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'world',
     'corsheaders',
+    'accounts',
 ]
 
 MIDDLEWARE = [
