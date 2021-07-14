@@ -3,6 +3,11 @@ from geo.Geoserver import Geoserver
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import datetime
+import environ
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 class WorldBorder(models.Model):
     # Regular Django fields corresponding to the attributes in the
@@ -35,7 +40,7 @@ class Elevation(models.Model):
     rast = models.RasterField()
 
 # initializing the library
-geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
+geo = Geoserver('http://127.0.0.1:'+env('GEOSERVER_PORT')+'/geoserver', username='admin', password='geoserver')
 
 # The shapefile model
 class Sentinel(models.Model):

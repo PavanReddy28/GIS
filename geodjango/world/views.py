@@ -10,8 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 env = environ.Env()
 environ.Env.read_env()
 
+geo = Geoserver('http://127.0.0.1:'+env('GEOSERVER_PORT')+'/geoserver', username='admin', password='geoserver')
+
 def index(request):
-    geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     db_layers = Sentinel.objects.all()
     colors = Sentinel.COLOR_RAMPS_CHOICES
@@ -42,7 +43,6 @@ def cluster(request, id):
     # processing.run("saga:kmeansclusteringforgrids",cluster_params)
     # qgs.exitQgis()
 
-    geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     print("Cluster ", layers, id)
     db_layers = Sentinel.objects.all()
@@ -52,7 +52,6 @@ def cluster(request, id):
 
 def change(request, id):
     
-    geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     print("Change ", layers, id)
     db_layers = Sentinel.objects.all()
