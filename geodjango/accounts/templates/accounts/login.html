@@ -1,0 +1,9 @@
+{% block content %}
+    <h1>Login</h1>
+    <form class="site-form" action="/accounts/login/" method="post">
+        {%csrf_token%}
+        {{form}}
+        <input type="submit" value="Login">
+    </form>
+    <a href="/accounts/signup/">Not a registered user? Sign Up here</a>
+{% endblock %}

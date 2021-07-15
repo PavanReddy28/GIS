@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
@@ -5,11 +6,13 @@ from .models import Sentinel
 import sys
 import environ
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
 
+@login_required(login_url="/accounts/login")
 def index(request):
     geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
@@ -42,7 +45,7 @@ def cluster(request, id):
     # processing.run("saga:kmeansclusteringforgrids",cluster_params)
     # qgs.exitQgis()
 
-    geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
+    geo = Geoserver('http://127.0.0.1:8080/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     print("Cluster ", layers, id)
     db_layers = Sentinel.objects.all()
@@ -52,7 +55,7 @@ def cluster(request, id):
 
 def change(request, id):
     
-    geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
+    geo = Geoserver('http://127.0.0.1:8080/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     print("Change ", layers, id)
     db_layers = Sentinel.objects.all()
