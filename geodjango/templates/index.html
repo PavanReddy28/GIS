@@ -155,9 +155,26 @@
           {% endfor %}
         </div>
 
-        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Choose Layer 1</h5>
-        <div class="list-group">
-          {% for map in db_layers %}              
+        <form action="changedetection" >
+          <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Choose Layer 1</h5>
+          <div class="list-group">
+            {% for map in db_layers %}              
+                <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ map.name }}</h5>
+                    <small> {{ map.uploaded_date }} </small>
+                  </div>
+                  <p class="mb-1">{{map.description}}</p>
+                  {% if map.color_ramps %}
+                  <small>Color Map : {{map.color_ramps}}</small>
+                  {% endif %}
+                </a>
+              {% endfor %}
+          </div>
+
+          <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
+          <div class="list-group">
+            {% for map in db_layers %}              
               <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ map.name }}</h5>
@@ -168,29 +185,14 @@
                 <small>Color Map : {{map.color_ramps}}</small>
                 {% endif %}
               </a>
-            {% endfor %}
-        </div>
+              {% endfor %}
+          </div>
 
-        <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
-        <div class="list-group">
-          {% for map in db_layers %}              
-            <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{ map.name }}</h5>
-                <small> {{ map.uploaded_date }} </small>
-              </div>
-              <p class="mb-1">{{map.description}}</p>
-              {% if map.color_ramps %}
-              <small>Color Map : {{map.color_ramps}}</small>
-              {% endif %}
-            </a>
-            {% endfor %}
-        </div>
-
-        <div class="d-grid gap-2" style="margin:3vh">
-          <Button class="btn btn-primary" href="changedetection/{{map.id}}" type="submit">Detect Change</Button>
-          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
-        </div>
+          <div class="d-grid gap-2" style="margin:3vh">
+            <Button class="btn btn-primary" type="submit">Detect Change</Button>
+            <!-- <Button class="btn btn-secondary"  type="reset">Reset</Button> -->
+          </div>
+        </form>
         
       </div>      
     </div>
@@ -245,7 +247,7 @@
 
           <div class="row mb-3">
             <p class="lead"><strong>Add a Raster File (.GeoTiff)*</strong></p>
-            <input class="form-control" name='raster' type="file" id="raster" required>
+            <input class="form-control" name='raster' accept=".tif, .geotiff, .sld, .shp" type="file" id="raster" required>
             <div class="invalid-feedback">
               Please add a Raster File location.
             </div>
@@ -326,7 +328,7 @@
 
         <h5 class="text-muted" style="margin: 2vh">Clustering Output</h5>
         <div class="list-group">
-          {% for map in db_layers %}              
+          {% for map in cluster_layers %}              
               <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ map.name }}</h5>
@@ -343,7 +345,7 @@
         <!--------------------------3. Download Change Detection Output---------------------------------------->
         <h5 class="text-muted" style="margin:2vh;">Change Detection Output</h5>
         <div class="list-group">
-          {% for map in db_layers %}              
+          {% for map in change_layers %}              
             <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ map.name }}</h5>
