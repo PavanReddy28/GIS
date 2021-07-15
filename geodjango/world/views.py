@@ -54,13 +54,7 @@ def cluster(request, id):
 
     return redirect("/", {'db_layers': db_layers, 'colors': colors})
 
-<<<<<<< Updated upstream
-def change(request, id):
-    
-    geo = Geoserver('http://127.0.0.1:8080/geoserver', username='admin', password='geoserver')
-=======
 def change(request):
->>>>>>> Stashed changes
     layers = geo.get_layers(workspace='App')['layers']['layer']
     # db_layer = Sentinel.objects.get(id=id)
     # print("Change ", layers, id, db_layer)
