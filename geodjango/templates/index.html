@@ -374,7 +374,13 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
       <div class="offcanvas-body">
-        
+        <h1>Login</h1>
+        <form class="site-form" action="/accounts/login/" method="post">
+            {%csrf_token%}
+            {{form}}
+            <input type="submit" value="Login">
+        </form>
+        <a href="/accounts/signup/">Not a registered user? Sign Up here</a>
       </div>
     </div>
   </div>
