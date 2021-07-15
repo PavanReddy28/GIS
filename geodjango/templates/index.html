@@ -209,7 +209,7 @@
       </div>
 
       <div class="offcanvas-body" style="margin: 2vh">
-        <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" novalidate>
+        <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" id="upload" novalidate>
           {% csrf_token %}
 
           <p class="lead"><strong>Name*</strong></p>
@@ -254,7 +254,7 @@
           </div>
         
           <div class="row mb-3 ">
-            <button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload</button>
+            <button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#upload_display">Upload</button>
           </div>
         </form>
 
@@ -263,7 +263,7 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade" id="upload_display" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
@@ -371,22 +371,130 @@
 
   <div class="user_login">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="user_login" aria-labelledby="offcanvasScrollingLabel">
+      {% if user.is_authenticated %}
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel2">User Login</h5>
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel2">User Info</h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
-      <div class="offcanvas-body">
-        <h1>Login</h1>
-        <form class="site-form" action="/accounts/login/" method="post">
+      <div class="offcanvas-body" style="vertical-align:auto; margin:3vh;">
+        <div id="user_info" style="align-items: center;">
+          <p class="lead" id="username"><strong>{{ user.username }}</strong></p>
+          <p class="lead" id="f_name"><strong>{{ user.first_name }}</strong></p>
+          <p class="lead" id="l_name"><strong>{{ user.last_name }}</strong></p>
+          <p class="lead" id="user_email"><strong>{{ user.email }}</strong></p>
+          <form method="POST" action="/accounts/logout/">
             {%csrf_token%}
-            {{form}}
-            <input type="submit" value="Login">
-        </form>
-        <a href="/accounts/signup/">Not a registered user? Sign Up here</a>
+            <div class="d-grid gap-2" style="margin:3vh"></div>
+            <button class="btn btn-primary" type="submit">Logout</button>
+            </div>
+          </form>
+        </div>
+
+      {% else %}
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel2"></h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
+      <div class="offcanvas-body" style="vertical-align:auto; margin:3vh;">
+      <h3 style="text-align: center;">User Login</h3>
+      <form class="" id="login" action="/accounts/login/" method="post">
+        {%csrf_token%}
+        <p class="lead"><strong></strong></p>
+          <div class="form-floating row mb-3">
+            <input type="text" class="form-control" name='first_name' id='fName' placeholder="Username" required>
+            <label for="floatingInput">Username</label>
+            <div class="invalid-feedback">
+              Please add a Username.
+            </div>
+          </div>
+          <div class="form-floating row mb-3">
+            <input type="password" class="form-control" name='password1' id='pwd1' placeholder="Password" required>
+            <label for="floatingInput">Password</label>
+            <div class="invalid-feedback">                 
+            </div>
+          </div>
+          <div class="d-grid gap-2" style="margin:3vh">
+            <Button class="btn btn-primary" type="submit" >Login</Button>
+            <button type="button" id="register_modal" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#register_form">Create an Account.</button>
+          </div>
+          </form>
+        </div>
+        {% endif %}
     </div>
   </div>
 
+  <!-- Modal -->
+  <div class="modal fade" id="register_form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="staticBackdropLabel">Register</h3>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+        <div class="modal-body" style="margin-left:3vh; margin-right:3vh;">
+          <!-- <div id="alert-box-dialog" style="display: none;">
+            <div class="alert alert-success" id="alert-box-content" role="alert"></div>
+          </div> -->
+          <div id="div_register" style="display:block;">
+            <form class="" id="register" action="/accounts/signup/" method="post">
+                {%csrf_token%}
+                <p class="lead"><strong>First Name</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" name='first_name' id='fName' placeholder="First Name" required>
+                  <label for="floatingInput">First Name</label>
+                  <div class="invalid-feedback">
+                    Please add a First Name.
+                  </div>
+                </div>
+                <p class="lead"><strong>Last Name</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" name='last_name' id='lName' placeholder="Last Name" required>
+                  <label for="floatingInput">Last Name</label>
+                  <div class="invalid-feedback">
+                    Please add a Last Name.
+                  </div>
+                </div>
+                <p class="lead"><strong>Username</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" name='uname' id='lName' placeholder="Username" required>
+                  <label for="floatingInput">Username</label>
+                  <div class="invalid-feedback">
+                    Please add a Username.
+                  </div>
+                </div>
+                <p class="lead"><strong>Email ID</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="email" class="form-control" name='email' id='email' placeholder="Email ID" required>
+                  <label for="floatingInput">Email ID</label>
+                  <div class="invalid-feedback">
+                    Please add your Email ID.
+                  </div>
+                </div>
+                <p class="lead"><strong>Password</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="password" class="form-control" name='password1' id='pwd1' placeholder="Password" required>
+                  <label for="floatingInput">Password</label>
+                  <div class="invalid-feedback">                 
+                  </div>
+                </div>
+                <div class="form-floating row mb-3">
+                  <input type="password" class="form-control" name='password2' id='pwd2' placeholder="Confirm Password" required>
+                  <label for="floatingInput">Confirm Password</label>
+                  <div class="invalid-feedback">                 
+                  </div>
+                </div>
+
+                <div class="d-grid gap-2" style="margin:4vh">
+                  <button class="btn btn-primary" type="submit">Register</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+          </div>
+      </div>
+    </div>
+  </div>
+  </div>
+ 
 
 <!----------------------------Openlayers implementation----------------->
 <!-- <h2>My Map</h2> -->
