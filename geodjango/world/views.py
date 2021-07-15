@@ -13,10 +13,10 @@ from django.core.mail import send_mail
 env = environ.Env()
 environ.Env.read_env()
 
-@login_required(login_url="/accounts/login")
+geo = Geoserver('http://127.0.0.1:'+env('GEOSERVER_PORT')+'/geoserver', username='admin', password='geoserver')
+
 def index(request):
-    geo = Geoserver('http://127.0.0.1:8085/geoserver', username='admin', password='geoserver')
-    layers = geo.get_layers(workspace='App')['layers']['layer']
+    # layers = geo.get_layers(workspace='App')['layers']['layer']
     db_layers = Sentinel.objects.all()
     colors = Sentinel.COLOR_RAMPS_CHOICES
     context = {'db_layers': db_layers, 'cluster_layers': db_layers, 'change_layers': db_layers, 'colors': colors}
@@ -46,7 +46,6 @@ def cluster(request, id):
     # processing.run("saga:kmeansclusteringforgrids",cluster_params)
     # qgs.exitQgis()
 
-    geo = Geoserver('http://127.0.0.1:8080/geoserver', username='admin', password='geoserver')
     layers = geo.get_layers(workspace='App')['layers']['layer']
     print("Cluster ", layers, id)
     db_layers = Sentinel.objects.all()
