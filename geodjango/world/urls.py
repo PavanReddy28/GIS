@@ -5,6 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.index, name="index"),
     path('clustering/<int:id>/', views.cluster, name="cluster"),
-    path('changedetection/<int:id>/', views.change, name="change"),
+    path('changedetection', views.change, name="change"),
     path('upload', views.upload, name='upload'),
 ]

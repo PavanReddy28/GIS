@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
@@ -5,6 +6,8 @@ from .models import Sentinel
 import sys
 import environ
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 
 # Initialise environment variables
 env = environ.Env()
@@ -50,13 +53,35 @@ def cluster(request, id):
 
     return redirect("/", {'db_layers': db_layers, 'colors': colors})
 
-def change(request, id):
-    
+def change(request):
     layers = geo.get_layers(workspace='App')['layers']['layer']
-    print("Change ", layers, id)
-    db_layers = Sentinel.objects.all()
+    # db_layer = Sentinel.objects.get(id=id)
+    # print("Change ", layers, id, db_layer)
     colors = Sentinel.COLOR_RAMPS_CHOICES
-
+    db_layers = Sentinel.objects.all()
+    send_mail(
+        'Trial',
+        'Uploaded',
+        'ypavan2802@gmail.com',
+        ['ypavan2802@gmail.com'],
+        html_message="""
+        <html lang="en">
+        <head>
+            <style>
+            html, body, #map {
+                height: 100vh;
+            }
+            </style>
+        </head>
+        <body>
+            <div id="map" class="map" style="padding: 2vh">
+                <h1>Map</h1>
+                <img src='http://127.0.0.1:8085/geoserver/App/wms?service=WMS&version=1.1.0&request=GetMap&layers=App%3AHyderabad&bbox=799980.0%2C1890240.0%2C909780.0%2C2000040.0&width=768&height=768&srs=EPSG%3A32643&styles=&format='/>
+            </div>
+        </body>
+        </html>
+        """
+    )
     return redirect("/", {'db_layers': db_layers, 'colors': colors})
 
 # @csrf_exempt

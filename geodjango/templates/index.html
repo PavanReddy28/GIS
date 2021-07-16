@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -155,9 +156,26 @@
           {% endfor %}
         </div>
 
-        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Choose Layer 1</h5>
-        <div class="list-group">
-          {% for map in db_layers %}              
+        <form action="changedetection" >
+          <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Choose Layer 1</h5>
+          <div class="list-group">
+            {% for map in db_layers %}              
+                <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ map.name }}</h5>
+                    <small> {{ map.uploaded_date }} </small>
+                  </div>
+                  <p class="mb-1">{{map.description}}</p>
+                  {% if map.color_ramps %}
+                  <small>Color Map : {{map.color_ramps}}</small>
+                  {% endif %}
+                </a>
+              {% endfor %}
+          </div>
+
+          <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
+          <div class="list-group">
+            {% for map in db_layers %}              
               <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ map.name }}</h5>
@@ -168,29 +186,14 @@
                 <small>Color Map : {{map.color_ramps}}</small>
                 {% endif %}
               </a>
-            {% endfor %}
-        </div>
+              {% endfor %}
+          </div>
 
-        <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
-        <div class="list-group">
-          {% for map in db_layers %}              
-            <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{ map.name }}</h5>
-                <small> {{ map.uploaded_date }} </small>
-              </div>
-              <p class="mb-1">{{map.description}}</p>
-              {% if map.color_ramps %}
-              <small>Color Map : {{map.color_ramps}}</small>
-              {% endif %}
-            </a>
-            {% endfor %}
-        </div>
-
-        <div class="d-grid gap-2" style="margin:3vh">
-          <Button class="btn btn-primary" href="changedetection/{{map.id}}" type="submit">Detect Change</Button>
-          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
-        </div>
+          <div class="d-grid gap-2" style="margin:3vh">
+            <Button class="btn btn-primary" type="submit">Detect Change</Button>
+            <!-- <Button class="btn btn-secondary"  type="reset">Reset</Button> -->
+          </div>
+        </form>
         
       </div>      
     </div>
@@ -207,7 +210,7 @@
       </div>
 
       <div class="offcanvas-body" style="margin: 2vh">
-        <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" novalidate>
+        <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" id="upload" novalidate>
           {% csrf_token %}
 
           <p class="lead"><strong>Name*</strong></p>
@@ -245,14 +248,14 @@
 
           <div class="row mb-3">
             <p class="lead"><strong>Add a Raster File (.GeoTiff)*</strong></p>
-            <input class="form-control" name='raster' type="file" id="raster" required>
+            <input class="form-control" name='raster' accept=".tif, .geotiff, .sld, .shp" type="file" id="raster" required>
             <div class="invalid-feedback">
               Please add a Raster File location.
             </div>
           </div>
         
           <div class="row mb-3 ">
-            <button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Upload</button>
+            <button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#upload_display">Upload</button>
           </div>
         </form>
 
@@ -261,7 +264,7 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade" id="upload_display" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
@@ -326,7 +329,7 @@
 
         <h5 class="text-muted" style="margin: 2vh">Clustering Output</h5>
         <div class="list-group">
-          {% for map in db_layers %}              
+          {% for map in cluster_layers %}              
               <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1">{{ map.name }}</h5>
@@ -343,7 +346,7 @@
         <!--------------------------3. Download Change Detection Output---------------------------------------->
         <h5 class="text-muted" style="margin:2vh;">Change Detection Output</h5>
         <div class="list-group">
-          {% for map in db_layers %}              
+          {% for map in change_layers %}              
             <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ map.name }}</h5>
@@ -370,15 +373,135 @@
   <div class="user_login">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="user_login" aria-labelledby="offcanvasScrollingLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel2">User Login</h5>
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel2"></h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
-      <div class="offcanvas-body">
-        
+      {% if user.is_authenticated %}
+      <div class="offcanvas-body" style="vertical-align:auto; margin-left:3vh; margin-right:3vh; margin-bottom:3vh;">
+        <div id="user_info" style="align-items: center;">
+          <h3 style="text-align: center;">User Login</h3>
+          <div class="text-center">
+            <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
+          </div>  
+          <p class="lead" id="username"><strong>Username : {{ user.username }}</strong></p>
+          <p class="lead" id="f_name"><strong>First Name : {{ user.first_name }}</strong></p>
+          <p class="lead" id="l_name"><strong>Last Name : {{ user.last_name }}</strong></p>
+          <p class="lead" id="user_email"><strong> Email ID : {{ user.email }}</strong></p>
+          <form method="POST" action="/accounts/logout/">
+            {%csrf_token%}
+            <div class="d-grid gap-2" style="margin:3vh">
+              <button class="btn btn-primary" type="submit">Logout</button>
+            </div>
+          </form>
+        </div>
       </div>
+
+      {% else %}
+
+      <div class="offcanvas-body" style="vertical-align:auto; margin-right:3vh; margin-left:3vh;">
+      <h3 style="text-align: center;">User Login</h3>
+      <div class="text-center">
+        <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
+      </div>  
+      <form class="" id="login" action="/accounts/login/" method="post">
+        {%csrf_token%}
+        <p class="lead"><strong></strong></p>
+          <div class="form-floating row mb-3">
+            <input type="text" class="form-control" name='username1' autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username" placeholder="Username" required>
+            <label for="floatingInput">Username</label>
+            <div class="invalid-feedback">
+              Please add a Username.
+            </div>
+          </div>
+          <div class="form-floating row mb-3">
+            <input type="password" class="form-control" name='password' autocomplete="current-password" required id="id_password" placeholder="Password" required>
+            <label for="floatingInput">Password</label>
+            <div class="invalid-feedback">                 
+            </div>
+          </div>
+          <div class="d-grid gap-2" style="margin:3vh">
+            <Button class="btn btn-primary" type="submit" >Login</Button>
+            <button type="button" id="register_modal" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#register_form">Create an Account.</button>
+          </div>
+          </form>
+        </div>
+        {% endif %}
     </div>
   </div>
 
+  <!-- Modal -->
+  <div class="modal fade" id="register_form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="staticBackdropLabel">Register</h3>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+        <div class="modal-body" style="margin-left:3vh; margin-right:3vh;">
+          <div id="div_register" style="display:block;">
+            <form class="" id="register" action="/accounts/signup/" method="post">
+                {%csrf_token%}
+                <p class="lead"><strong>First Name</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" name='first_name' id='fName' placeholder="First Name" required>
+                  <label for="floatingInput">First Name</label>
+                  <div class="invalid-feedback">
+                    Please add a First Name.
+                  </div>
+                </div>
+                <p class="lead"><strong>Last Name</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" name='last_name' id='lName' placeholder="Last Name" required>
+                  <label for="floatingInput">Last Name</label>
+                  <div class="invalid-feedback">
+                    Please add a Last Name.
+                  </div>
+                </div>
+                <p class="lead"><strong>Username</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" maxlength="150" autocapitalize="none" name="username" autocomplete="username" autofocus required id="id_username" placeholder="Username" required>
+                  <label for="floatingInput">Username</label>
+                  <div class="invalid-feedback">
+                    Please add a Username.
+                  </div>
+                </div>
+                <p class="lead"><strong>Email ID</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="email" class="form-control" name='email' id='email' placeholder="Email ID" required>
+                  <label for="floatingInput">Email ID</label>
+                  <div class="invalid-feedback">
+                    Please add your Email ID.
+                  </div>
+                </div>
+                <p class="lead"><strong>Password</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="password" class="form-control" name="password1" autocomplete="new-password" required id="id_password1" placeholder="Password" required>
+                  <label for="floatingInput">Password</label>
+                  <div class="invalid-feedback">                 
+                  </div>
+                </div>
+                <div class="form-floating row mb-3">
+                  <input type="password" class="form-control" name="password2" autocomplete="new-password" required id="id_password2" placeholder="Confirm Password" required>
+                  <label for="floatingInput">Confirm Password</label>
+                  <div class="invalid-feedback">                 
+                  </div>
+                </div>
+                <div id="alert-box-register" style="display: none;">
+                  <div class="alert alert-danger" id="alert-box-content" role="alert">Passowrds are not matching</div>
+                </div>
+                <div class="d-grid gap-2" style="margin:4vh">
+                  <button class="btn btn-primary" type="submit" id="register_button">Register</button>
+                </div>
+            </form>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+  </div>
+ 
 
 <!----------------------------Openlayers implementation----------------->
 <!-- <h2>My Map</h2> -->
