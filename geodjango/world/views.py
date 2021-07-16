@@ -1,4 +1,3 @@
-from django.contrib.auth import login
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
@@ -6,8 +5,6 @@ from .models import Sentinel
 from django.contrib.messages import get_messages
 from django.contrib import messages
 import environ
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 import time
 

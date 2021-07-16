@@ -4,15 +4,17 @@
 {% block content %}
 
 <!---------------------Search Bar--------------------->
-    <!-- <div class="event__search__floater">
-        <div class="search__anchor">
-            <form id="event-search-form" action="get">
-                    <input type="text" class="search__bar" placeholder="Search">
-                <input class="search__submit" type="submit">
-                <div class="search__toggler"></div>
-            </form>
-        </div>
-    </div> -->
+<!-- <div class="input-group">
+  <form>
+    <div class="form-outline">
+      <input type="search" id="form1" class="form-control" />
+      <label for="form1">Search</label>
+    </div>
+    <button type="button" class="btn btn-primary" type="submit">
+      <i class="material-icons">search</i>
+    </button>
+  </form>
+</div> -->
 
 <!------------------Navigation Offcanvas------------------------->
 
@@ -20,7 +22,7 @@
   <div class="Layers">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="layers" aria-labelledby="offcanvasScrollingLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel1">Layers</h5>
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel1">Layers</h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
@@ -83,7 +85,7 @@
   <div class="clustering">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="clustering" aria-labelledby="offcanvasScrollingLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel2">Clustering</h5>
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel2">Clustering</h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
       <div class="offcanvas-body">
@@ -134,7 +136,7 @@
   <div class="change_detection">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="change_detection" aria-labelledby="offcanvasScrollingLabel">
       <div class="offcanvas-header">
-        <h4 class="offcanvas-title" id="offcanvasScrollingLabel3">Change Detection</h4>
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel3">Change Detection</h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
@@ -205,11 +207,12 @@
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="upload" aria-labelledby="offcanvasScrollingLabel">
 
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel1">Upload</h5>
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel1">Upload</h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
 
-      <div class="offcanvas-body" style="margin: 2vh">
+      <div class="offcanvas-body" style="margin-left:2vh; margin-right:2vh">
+        
         <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" id="upload" novalidate>
           {% csrf_token %}
 
@@ -233,7 +236,6 @@
           
           <div class="row mb-3">
             <p class="lead"><strong>Choose a Color Ramp</strong></p>
-            <!-- <h6 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh"></h5> -->
             <select class="form-select" name='cRamp' id="cRamp" size="5" aria-label="size 5 select example">
               <option selected>None</option>
               {% for k in colors %}
@@ -263,7 +265,7 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!----------------------------------- Upload Progress Bar - Modal ---------------------------------->
   <div class="modal fade" id="upload_display" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
@@ -303,7 +305,7 @@
   <div class="download">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="download" aria-labelledby="offcanvasScrollingLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel3">Download</h5>
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel3">Download</h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
@@ -376,10 +378,12 @@
         <h3 class="offcanvas-title" id="offcanvasScrollingLabel2"></h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
+
       {% if user.is_authenticated %}
+
       <div class="offcanvas-body" style="vertical-align:auto; margin-left:3vh; margin-right:3vh; margin-bottom:3vh;">
         <div id="user_info" style="align-items: center;">
-          <h3 style="text-align: center;">User Login</h3>
+          <h3 style="text-align: center;"><strong>User Login</strong></h3>
           <div class="text-center">
             <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
           </div>  
@@ -387,25 +391,28 @@
           <p class="lead" id="f_name"><strong>First Name : {{ user.first_name }}</strong></p>
           <p class="lead" id="l_name"><strong>Last Name : {{ user.last_name }}</strong></p>
           <p class="lead" id="user_email"><strong> Email ID : {{ user.email }}</strong></p>
+
           <form method="POST" action="/accounts/logout/">
             {%csrf_token%}
             <div class="d-grid gap-2" style="margin:3vh">
               <button class="btn btn-primary" type="submit">Logout</button>
             </div>
           </form>
+
         </div>
       </div>
 
       {% else %}
 
       <div class="offcanvas-body" style="vertical-align:auto; margin-right:3vh; margin-left:3vh;">
-      <h3 style="text-align: center;">User Login</h3>
-      <div class="text-center">
-        <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
-      </div>  
-      <form class="" id="login" action="/accounts/login/" method="post">
-        {%csrf_token%}
-        <p class="lead"><strong></strong></p>
+        <h3 style="text-align: center;"><strong>User Login</strong></h3>
+        <div class="text-center">
+          <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
+        </div>  
+
+        <form class="" id="login" action="/accounts/login/" method="post">
+          {%csrf_token%}
+          <p class="lead"><strong></strong></p>
           <div class="form-floating row mb-3">
             <input type="text" class="form-control" name='username1' autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username" placeholder="Username" required>
             <label for="floatingInput">Username</label>
@@ -423,13 +430,15 @@
             <Button class="btn btn-primary" type="submit" >Login</Button>
             <button type="button" id="register_modal" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#register_form">Create an Account.</button>
           </div>
-          </form>
-        </div>
-        {% endif %}
+        </form>
+
+      </div>
+
+      {% endif %}
     </div>
   </div>
 
-  <!-- Modal -->
+  <!--------------------Sign Up Modal ----------------------------->
   <div class="modal fade" id="register_form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
@@ -504,27 +513,13 @@
  
 
 <!----------------------------Openlayers implementation----------------->
-<!-- <h2>My Map</h2> -->
-  <div id="map" class="map"></div>
-  <!-- <script type="text/javascript">
-      var map = new ol.Map({
-      target: 'map',
-      layers: [
-          new ol.layer.Tile({
-          source: new ol.source.OSM()
-          })
-      ],
-      view: new ol.View({
-          center: ol.proj.fromLonLat([37.41, 8.82]),
-          zoom: 4
-      })
-      });
-  </script> -->
+<div id="map" class="map"></div>
 
 <!------------------------------------Toast - Message------------------------------->
+<div class="toast-container position-fixed bottom-0 start-0 p-3 w-75">
 {% if messages %}
   {% for message in messages %}
-  <div class="position-fixed bottom-0 start-0 p-3"> 
+  <!-- <div class="position-fixed bottom-0 start-0 p-3 w-75" >  -->
     <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" id="toast_a">
       <div class="toast-header">
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
@@ -544,9 +539,10 @@
         {{message}}
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 
   {% endfor %}
 {% endif %}
+</div>
 
 {% endblock %}

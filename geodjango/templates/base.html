@@ -25,10 +25,19 @@
 </head>
 <body>
 
-    
+    <!-- <div class="text-center" id="logo" >
+        <div class="container-fluid">
+            <a class="nav-brand" href="#" style="color: black;">
+                <img src="{% static 'favicon.ico' %}" alt="" width="50" height="50" class="d-inline-block align-text-top">
+            </a>
+        </div>
+    </div>     -->
 
     <!----------------------------------Navigation-------------------------------------->
     <nav class="menu">
+        <a class="nav-brand" href="/" style="color: black;">
+            <img src="{% static 'favicon.ico' %}" alt="" width="40" height="40" class="d-inline-block align-text-top">
+        </a>
         <a type="button" data-bs-toggle="offcanvas" data-bs-target="#upload" aria-controls="offcanvasScrolling" class="menu_item">
             <i class="material-icons">add</i>
         </a>
@@ -44,12 +53,14 @@
         <a type="button" data-bs-toggle="offcanvas" data-bs-target="#download" aria-controls="offcanvasScrolling" class="menu_item">
             <i class="material-icons">file_download</i>
         </a>
-        <a type="button" data-bs-toggle="offcanvas" data-bs-target="#user_login" aria-controls="offcanvasScrolling" class="menu_item">
-            <i class="material-icons">account_circle</i>
-        </a> 
-        <a href="" class="menu_item">
+        <div id="user-icon">
+            <a type="button" data-bs-toggle="offcanvas" data-bs-target="#user_login" aria-controls="offcanvasScrolling" class="menu_item">
+                <i class="material-icons">person</i>
+            </a> 
+        </div>
+        <!-- <a href="" class="menu_item">
             <i class="material-icons">settings</i>
-        </a> 
+        </a>  -->
     </nav> 
 
     <!----------------------------------Navigation END-------------------------------------->

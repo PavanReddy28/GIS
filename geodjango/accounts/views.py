@@ -12,11 +12,21 @@ def signup_view(request):
         username = request.POST['username']
         password1 = request.POST['password1']
         email = request.POST['email']
-        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password1, email=email)
-        user.save()
-        login(request,user)
-        messages.add_message(request, messages.SUCCESS, 'Welcome aboard '+first_name+'! You are registered on GIS-World.')
-        return redirect('/')
+        if User.objects.filter(username=username).exists():
+            messages.add_message(request, messages.ERROR, '"'+username+'" already exists. Please try again with a different username.')
+            if User.objects.filter(email=email).exists():
+                messages.add_message(request, messages.ERROR, 'There is already an account with username "'+str(User.objects.filter(email=email)[0])+'" registered on the mentioned email. Please login.')
+                return redirect('/')
+            return redirect('/')
+        elif User.objects.filter(email=email).exists():
+            messages.add_message(request, messages.ERROR, 'There is already an account with username "'+str(User.objects.filter(email=email)[0])+'" registered on the mentioned email. Please login.')
+            return redirect('/')
+        else:
+            user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password1, email=email)
+            user.save()
+            login(request,user)
+            messages.add_message(request, messages.SUCCESS, 'Welcome aboard '+first_name+'! You are registered on GIS-World.')
+            return redirect('/')
     else:
         print("fail")
     messages.add_message(request, messages.ERROR, 'Sign up Failed! Please try again.')
@@ -43,5 +53,5 @@ def login_view(request):
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
-        messages.add_message(request, messages.SUCCESS, 'Thank You for using GIS-world! You are succesfully logged out.')
+        messages.add_message(request, messages.SUCCESS, 'Thank You for using GIS-world! You have succesfully logged out.')
         return redirect('/')

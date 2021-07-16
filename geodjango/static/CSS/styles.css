@@ -1,12 +1,21 @@
 /*Navigation*/
 
+#user-icon{
+  position: fixed;
+  bottom: 0vh;
+  right:0.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .menu{
     position:fixed;
     top:0;
     right:0;
-    width: 50px;
+    width: 40px;
     height: 100%;
-    background: #eeeeee;
+    background: ivory;
     font-size: 16px;
     font-family: sans-serif;
 }
@@ -29,7 +38,7 @@
 
 /* Main Body */
 .main_container{
-  margin-right: 50px;
+  margin-right: 40px;
 }
 
 /* .map {
