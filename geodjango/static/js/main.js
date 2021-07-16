@@ -343,6 +343,15 @@ var view = new ol.View({
     enableRotation: false
 });
 
+const mousePositionControl = new ol.control.MousePosition({
+    coordinateFormat: ol.coordinate.createStringXY(2),
+    projection: 'EPSG:4326',
+    // comment the following two lines to have the mouse position
+    // be placed within the map.
+    className: 'custom-mouse-position',
+    target: document.getElementById('mouse-position'),
+  });
+
 var map = new ol.Map({
     target: 'map',
     layers: [],
@@ -353,10 +362,7 @@ var map = new ol.Map({
         new ol.control.ZoomSlider(),
         new ol.control.Rotate(),
         new ol.control.ScaleLine(),
-        new ol.control.MousePosition({
-            coordinateFormat: ol.coordinate.createStringXY(4),
-            projection: 'EPSG:4326'
-        })
+        mousePositionControl
     ]),
     layers: [baseLayerGroup, wmsLayers, wmsClusterLayers, wmsChangeLayers],
 });

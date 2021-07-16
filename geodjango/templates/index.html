@@ -211,7 +211,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
 
-      <div class="offcanvas-body" style="margin-left:2vh; margin-right:2vh">
+      <div class="offcanvas-body" style="margin-left:2vh; margin-right:2vh; margin-bottom:4vh">
         
         <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" id="upload" novalidate>
           {% csrf_token %}
@@ -544,5 +544,8 @@
   {% endfor %}
 {% endif %}
 </div>
+
+<!-------------------------------Map coordinates-------------------------->
+<div class="custom-mouse-position" id="mouse-position"></div>
 
 {% endblock %}
