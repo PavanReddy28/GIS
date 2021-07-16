@@ -3,23 +3,37 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
 from .models import Sentinel
-import sys
+from django.contrib.messages import get_messages
+from django.contrib import messages
 import environ
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+import time
 
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env()
 
+#  Geoserver Variables
 geo = Geoserver('http://127.0.0.1:'+env('GEOSERVER_PORT')+'/geoserver', username='admin', password='geoserver')
+ # layers = geo.get_layers(workspace='App')['layers']['layer']
 
 def index(request):
-    # layers = geo.get_layers(workspace='App')['layers']['layer']
+
     db_layers = Sentinel.objects.all()
     colors = Sentinel.COLOR_RAMPS_CHOICES
-    context = {'db_layers': db_layers, 'cluster_layers': db_layers, 'change_layers': db_layers, 'colors': colors}
+    messages = get_messages(request)
+    tim = time.strftime("%H:%M", time.localtime())
+    context = {
+        'db_layers': db_layers, 
+        'cluster_layers': db_layers, 
+        'change_layers': db_layers, 
+        'colors': colors, 
+        'time':tim,
+        'messages': messages,
+        }
+
     return render(request, "index.html", context)
 
 def cluster(request, id):
@@ -46,19 +60,10 @@ def cluster(request, id):
     # processing.run("saga:kmeansclusteringforgrids",cluster_params)
     # qgs.exitQgis()
 
-    layers = geo.get_layers(workspace='App')['layers']['layer']
-    print("Cluster ", layers, id)
-    db_layers = Sentinel.objects.all()
-    colors = Sentinel.COLOR_RAMPS_CHOICES
-
-    return redirect("/", {'db_layers': db_layers, 'colors': colors})
+    return redirect("/")
 
 def change(request):
-    layers = geo.get_layers(workspace='App')['layers']['layer']
-    # db_layer = Sentinel.objects.get(id=id)
-    # print("Change ", layers, id, db_layer)
-    colors = Sentinel.COLOR_RAMPS_CHOICES
-    db_layers = Sentinel.objects.all()
+
     send_mail(
         'Trial',
         'Uploaded',
@@ -82,22 +87,21 @@ def change(request):
         </html>
         """
     )
-    return redirect("/", {'db_layers': db_layers, 'colors': colors})
 
-# @csrf_exempt
+    return redirect("/")
+
 def upload(request):
-    print(request.POST)
-    print(request.FILES)
-    # if request.method=='POST' and request.FILES['raster']:
+
     name = request.POST['mapName']
     desc = request.POST['desc']
     c_ramp = request.POST['c_ramp']
     raster = request.FILES['raster']
+
     if c_ramp=='None':
         file = Sentinel.objects.create(name=name, description=desc, color_ramps=None, file=raster)
         file.save()
     else:
         file = Sentinel.objects.create(name=name, description=desc, color_ramps=c_ramp, file=raster)
         file.save()
-    print(name, desc, c_ramp, raster)
+    messages.add_message(request, messages.SUCCESS, 'File '+name+' is succesfully uploaded!')
     return HttpResponse('Uploaded')

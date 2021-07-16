@@ -1,3 +1,13 @@
+//---------------------------Toast-----------------------------------------
+
+var bt_toast = document.getElementById("toast_btn")
+if(bt_toast)
+{
+    bt_toast.addEventListener("click", (ev)=>{
+        document.getElementById("toast_a").classList.remove("show")
+    })
+}
+
 // --------------------Upload Form Validation ----------------------------------------
 (function () {
     'use strict'

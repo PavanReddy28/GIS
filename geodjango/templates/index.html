@@ -521,19 +521,32 @@
       });
   </script> -->
 
-<!------------------------------------Toast------------------------------->
-  <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 11">
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" >
+<!------------------------------------Toast - Message------------------------------->
+{% if messages %}
+  {% for message in messages %}
+  <div class="position-fixed bottom-0 start-0 p-3"> 
+    <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" id="toast_a">
       <div class="toast-header">
-        <!-- <img src="..." class="rounded me-2" alt="..."> -->
-        <strong class="me-auto">Success</strong>
-        <small>11 mins ago</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+          <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#ff0000"></rect></svg>
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+          <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+        {% endif %}
+        {% if message.tags == "error" %}
+          <strong class="me-auto" >Error</strong>
+        {% elif message.tags == "success" %}
+          <strong class="me-auto" >Success</strong>
+        {% endif %}
+        <small>{{time}}</small>
+        <button type="button" class="btn-close" id="toast_btn" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div class="toast-body">
-        Clustering is succesful.
+        {{message}}
       </div>
     </div>
   </div>
+
+  {% endfor %}
+{% endif %}
 
 {% endblock %}

@@ -2,8 +2,9 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login,logout
 from django.contrib.auth.models import User, auth
+from django.contrib import messages
 
-# Create your views here.
+
 def signup_view(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
@@ -11,21 +12,14 @@ def signup_view(request):
         username = request.POST['username']
         password1 = request.POST['password1']
         email = request.POST['email']
-
         user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password1, email=email)
         user.save()
-        print(user)
-        # user1 = auth.authenticate(username=username, password=password1)
-        # form = UserCreationForm(request.POST)
-        # print(form, request.POST)
-        # if form.is_valid():
-        #     user = form.save()
-        #     print(user)
         login(request,user)
+        messages.add_message(request, messages.SUCCESS, 'Welcome aboard '+first_name+'! You are registered on GIS-World.')
         return redirect('/')
     else:
         print("fail")
-        # form = UserCreationForm()
+    messages.add_message(request, messages.ERROR, 'Sign up Failed! Please try again.')
     return redirect('/')
 
 def login_view(request):
@@ -36,21 +30,18 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
+            messages.add_message(request, messages.SUCCESS, 'Welcome back '+user.first_name+'! You are logged in.')
             return redirect('/')
         else:
-            print('Login Failed 1')
-        # form = AuthenticationForm(data=request.POST)
-        # print(form, request.POST)
-        # if form.is_valid():
-        #     user = form.get_user()
-        #     print(user)
+            messages.add_message(request, messages.ERROR, 'Login Falied! Username or Password is incorrect.')
+            redirect('/')
     else:
         print('Login Failed 2')
-        # form = AuthenticationForm()
     return redirect('/')
 
 
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
+        messages.add_message(request, messages.SUCCESS, 'Thank You for using GIS-world! You are succesfully logged out.')
         return redirect('/')
