@@ -19,25 +19,6 @@
       })
     })()
 
-// --------------------Register Form Validation ----------------------------------------
-// function () {
-//     'use strict'
-//     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-//     var forms = document.querySelectorAll('register')
-  
-//     // Loop over them and prevent submission
-//     Array.prototype.slice.call(forms)
-//       .forEach(function (form) {
-//         form.addEventListener('submit', function (event) {
-//           if (!form.checkValidity()) {
-//             event.preventDefault()
-//             event.stopPropagation()
-//           }
-  
-//           form.classList.add('was-validated')
-//         }, false)
-//       })
-//     }
 
 //--------------------------------register functions--------------------------------------
 var register_m = document.getElementById("register_modal")
@@ -49,6 +30,19 @@ if(register_m)
     })
 }
 
+var register_f = document.getElementById("register")
+if(register_f)
+{
+    register_f.addEventListener("submit", (event)=>{
+        if(document.getElementById('id_password1').value != document.getElementById('id_password2').value)
+        {
+            event.preventDefault()
+            event.stopPropagation()
+            var alert = document.getElementById("alert-box-register")
+            alert.style['display'] = 'block';
+        }
+    })
+}
 
 //-----------------------------------------Uploading Raster Layer -------------------------------
 function onFormSubmit(event){

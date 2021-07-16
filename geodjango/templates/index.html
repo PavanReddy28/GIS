@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -371,44 +372,49 @@
 
   <div class="user_login">
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="user_login" aria-labelledby="offcanvasScrollingLabel">
-      {% if user.is_authenticated %}
-      <div class="offcanvas-header">
-        <h3 class="offcanvas-title" id="offcanvasScrollingLabel2">User Info</h3>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
-      </div>
-      <div class="offcanvas-body" style="vertical-align:auto; margin:3vh;">
-        <div id="user_info" style="align-items: center;">
-          <p class="lead" id="username"><strong>{{ user.username }}</strong></p>
-          <p class="lead" id="f_name"><strong>{{ user.first_name }}</strong></p>
-          <p class="lead" id="l_name"><strong>{{ user.last_name }}</strong></p>
-          <p class="lead" id="user_email"><strong>{{ user.email }}</strong></p>
-          <form method="POST" action="/accounts/logout/">
-            {%csrf_token%}
-            <div class="d-grid gap-2" style="margin:3vh"></div>
-            <button class="btn btn-primary" type="submit">Logout</button>
-            </div>
-          </form>
-        </div>
-
-      {% else %}
       <div class="offcanvas-header">
         <h3 class="offcanvas-title" id="offcanvasScrollingLabel2"></h3>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
-      <div class="offcanvas-body" style="vertical-align:auto; margin:3vh;">
+      {% if user.is_authenticated %}
+      <div class="offcanvas-body" style="vertical-align:auto; margin-left:3vh; margin-right:3vh; margin-bottom:3vh;">
+        <div id="user_info" style="align-items: center;">
+          <h3 style="text-align: center;">User Login</h3>
+          <div class="text-center">
+            <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
+          </div>  
+          <p class="lead" id="username"><strong>Username : {{ user.username }}</strong></p>
+          <p class="lead" id="f_name"><strong>First Name : {{ user.first_name }}</strong></p>
+          <p class="lead" id="l_name"><strong>Last Name : {{ user.last_name }}</strong></p>
+          <p class="lead" id="user_email"><strong> Email ID : {{ user.email }}</strong></p>
+          <form method="POST" action="/accounts/logout/">
+            {%csrf_token%}
+            <div class="d-grid gap-2" style="margin:3vh">
+              <button class="btn btn-primary" type="submit">Logout</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {% else %}
+
+      <div class="offcanvas-body" style="vertical-align:auto; margin-right:3vh; margin-left:3vh;">
       <h3 style="text-align: center;">User Login</h3>
+      <div class="text-center">
+        <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
+      </div>  
       <form class="" id="login" action="/accounts/login/" method="post">
         {%csrf_token%}
         <p class="lead"><strong></strong></p>
           <div class="form-floating row mb-3">
-            <input type="text" class="form-control" name='first_name' id='fName' placeholder="Username" required>
+            <input type="text" class="form-control" name='username1' autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username" placeholder="Username" required>
             <label for="floatingInput">Username</label>
             <div class="invalid-feedback">
               Please add a Username.
             </div>
           </div>
           <div class="form-floating row mb-3">
-            <input type="password" class="form-control" name='password1' id='pwd1' placeholder="Password" required>
+            <input type="password" class="form-control" name='password' autocomplete="current-password" required id="id_password" placeholder="Password" required>
             <label for="floatingInput">Password</label>
             <div class="invalid-feedback">                 
             </div>
@@ -432,9 +438,6 @@
           <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
         </div>
         <div class="modal-body" style="margin-left:3vh; margin-right:3vh;">
-          <!-- <div id="alert-box-dialog" style="display: none;">
-            <div class="alert alert-success" id="alert-box-content" role="alert"></div>
-          </div> -->
           <div id="div_register" style="display:block;">
             <form class="" id="register" action="/accounts/signup/" method="post">
                 {%csrf_token%}
@@ -456,7 +459,7 @@
                 </div>
                 <p class="lead"><strong>Username</strong></p>
                 <div class="form-floating row mb-3">
-                  <input type="text" class="form-control" name='uname' id='lName' placeholder="Username" required>
+                  <input type="text" class="form-control" maxlength="150" autocapitalize="none" name="username" autocomplete="username" autofocus required id="id_username" placeholder="Username" required>
                   <label for="floatingInput">Username</label>
                   <div class="invalid-feedback">
                     Please add a Username.
@@ -472,24 +475,28 @@
                 </div>
                 <p class="lead"><strong>Password</strong></p>
                 <div class="form-floating row mb-3">
-                  <input type="password" class="form-control" name='password1' id='pwd1' placeholder="Password" required>
+                  <input type="password" class="form-control" name="password1" autocomplete="new-password" required id="id_password1" placeholder="Password" required>
                   <label for="floatingInput">Password</label>
                   <div class="invalid-feedback">                 
                   </div>
                 </div>
                 <div class="form-floating row mb-3">
-                  <input type="password" class="form-control" name='password2' id='pwd2' placeholder="Confirm Password" required>
+                  <input type="password" class="form-control" name="password2" autocomplete="new-password" required id="id_password2" placeholder="Confirm Password" required>
                   <label for="floatingInput">Confirm Password</label>
                   <div class="invalid-feedback">                 
                   </div>
                 </div>
-
+                <div id="alert-box-register" style="display: none;">
+                  <div class="alert alert-danger" id="alert-box-content" role="alert">Passowrds are not matching</div>
+                </div>
                 <div class="d-grid gap-2" style="margin:4vh">
-                  <button class="btn btn-primary" type="submit">Register</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button class="btn btn-primary" type="submit" id="register_button">Register</button>
                 </div>
             </form>
           </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
