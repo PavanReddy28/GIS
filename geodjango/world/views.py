@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
 from .models import Sentinel
@@ -7,6 +7,7 @@ from django.contrib import messages
 import environ
 from django.core.mail import send_mail
 import time
+from django.views.generic import ListView
 
 # Initialise environment variables
 env = environ.Env()
@@ -102,3 +103,26 @@ def upload(request):
         file.save()
     messages.add_message(request, messages.SUCCESS, 'File '+name+' is succesfully uploaded!')
     return HttpResponse('Uploaded')
+
+list = []
+def search(request):
+    print(request)
+    if request.POST:
+        list.clear()
+        print(request.POST)
+        name = request.POST["search"]
+        list.append(name)
+        return HttpResponse("Posted")
+    else:
+        print(list)
+        postresult = Sentinel.objects.filter(name__contains=list[0])
+        l = list.pop()
+        json = []
+        count = 0
+        print(postresult)
+        for i in postresult:
+            print(i.name, i.description, i.color_ramps, i.uploaded_date)
+            json.append({"name":i.name, "description":i.description, "color_ramps":i.color_ramps, "uploaded_date":i.uploaded_date})
+            count+=1
+        print(JsonResponse(json, safe=False))
+        return JsonResponse(json, safe=False)

@@ -3,20 +3,38 @@
 
 {% block content %}
 
-<!---------------------Search Bar--------------------->
-<!-- <div class="input-group">
-  <form>
-    <div class="form-outline">
-      <input type="search" id="form1" class="form-control" />
-      <label for="form1">Search</label>
-    </div>
-    <button type="button" class="btn btn-primary" type="submit">
-      <i class="material-icons">search</i>
-    </button>
-  </form>
-</div> -->
-
 <!------------------Navigation Offcanvas------------------------->
+
+  <!--------------------------------__Search------------------------------>
+
+  <div class="Search">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="search" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel1">Search</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <form class="form-inline my-2 my-lg-0" method="GET" action="search" onsubmit="searchSubmit(event)">
+          {%csrf_token%}
+          <div class="input-group mb-3">
+            <input id="sea" type="search" name="search1" class="form-control" placeholder="Search" aria-label="search" aria-describedby="button-addon2">
+            <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
+          </div>
+        </form>
+
+        <div class="d-flex justify-content-center" >
+          <div class="spinner-border" id="spin" style="display: none;" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <div class="list-group" id="search_layers">
+          
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-----------------------------1. Layers------------------------->
   <div class="Layers">
@@ -26,37 +44,60 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
+
         <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Base Layers</h5>
-        <div class="list-group" id="baseLayers">
+        <div class="list-group" id="baseLayers">          
           <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="openStreetMapStandard">
-            <!-- <input class="form-check-input me-1" type="checkbox" value="baselayerOSM" aria-label="..."> -->
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">Open Street Map</h5>
               <small>1</small>
             </div>
-            <p class="mb-1">Open Layers OSM</p>
-            <param id="myParam" name="autoplay" value="true">
-            <small>Default</small>
+            <div class="collapse" id="collapseExample">
+              <p class="mb-1">Open Layers OSM</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>Default</small>
+            </div>
+            </span>
           </a>
           <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="openStreetMapStamenlayer">
-            <!-- <input class="form-check-input me-1" type="checkbox" value="baselayerOSM" aria-label="..."> -->
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample1" aria-expanded="true" aria-controls="collapseExample">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">Terrain Open Street Map</h5>
               <small>2</small>
             </div>
-            <p class="mb-1">Stamen OSM</p>
-            <param id="myParam" name="autoplay" value="true">
-            <small>Terrain</small>
+            <div class="collapse" id="collapseExample1">
+              <p class="mb-1">Stamen OSM</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>Terrain</small>
+            </div>
+            </span>
           </a>
           <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="OSMStamenWaterLayer">
-            <!-- <input class="form-check-input me-1" type="checkbox" value="baselayerOSM" aria-label="..."> -->
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="true" aria-controls="collapseExample">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">Water Layer Open Street Map</h5>
               <small>3</small>
             </div>
-            <p class="mb-1">Stamen OSM</p>
-            <param id="myParam" name="autoplay" value="true">
-            <small>Water Layer</small>
+            <div class="collapse" id="collapseExample2">
+              <p class="mb-1">Stamen OSM</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>Water Layer</small>
+            </div>
+            </span>
+          </a>
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="aerial">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample3" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Aerial Satellite View</h5>
+              <small>4</small>
+            </div>
+            <div class="collapse" id="collapseExample3">
+              <p class="mb-1">Aerial</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>Satellite</small>
+            </div>
+            </span>
           </a>
         </div>
 
@@ -64,15 +105,19 @@
         <div class="list-group" id="wmsLayers">
           {% for map in db_layers %}
             <a class="list-group-item list-group-item-action">
-              <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{ map.name }}</h5>
-                <small> {{ map.uploaded_date }} </small>
-              </div>
-              <p class="mb-1">{{map.description}}</p>
-              {% if map.color_ramps %}
-              <small>Color Map : {{map.color_ramps}}</small>
-              {% endif %}
+              <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}1" aria-expanded="true" aria-controls="collapseExample">
+                <div class="d-flex w-100 justify-content-between" id="check">
+                  <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
+                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <div class="collapse" id="{{map.color_ramps}}1">
+                  <p class="mb-1">{{map.description}}</p>
+                  {% if map.color_ramps %}
+                  <small>Color Map : {{map.color_ramps}}</small>
+                  {% endif %}
+                </div>
+              </span>
             </a>
           {% endfor %}
         </div>
@@ -92,15 +137,19 @@
         <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Original Layers</h5>
         <div class="list-group">
           {% for map in db_layers %}
-            <a class="list-group-item list-group-item-action" data-bs-toggle="list">
-              <div class="d-flex w-100 justify-content-between">
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <span data-bs-toggle="collapse" id="span-wms-cluster" data-bs-target="#{{map.color_ramps}}2" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
                 <small> {{ map.uploaded_date }} </small>
               </div>
-              <p class="mb-1">{{map.description}}</p>
-              {% if map.color_ramps %}
-              <small>Color Map : {{map.color_ramps}}</small>
-              {% endif %}
+              <div class="collapse" id="{{map.color_ramps}}2">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
             </a>
           {% endfor %}
         </div>
@@ -113,17 +162,21 @@
         <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
         <div class="list-group" id="wmsClusterLayers">
           {% for map in cluster_layers %}
-            <a class="list-group-item list-group-item-action">
-              <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
-              <div class="d-flex w-100 justify-content-between">
+          <a class="list-group-item list-group-item-action">
+            <span data-bs-toggle="collapse" id="span-wms-cluster" data-bs-target="#{{map.color_ramps}}3" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
                 <h5 class="mb-1">{{ map.name }}</h5>
                 <small> {{ map.uploaded_date }} </small>
               </div>
-              <p class="mb-1">{{map.description}}</p>
-              {% if map.color_ramps %}
-              <small>Color Map : {{map.color_ramps}}</small>
-              {% endif %}
-            </a>
+              <div class="collapse" id="{{map.color_ramps}}3">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+          </a>
           {% endfor %}
         </div>
 
@@ -144,49 +197,61 @@
         <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
         <div class="list-group" id="wmsChangeLayers">
           {% for map in change_layers %}
-            <a class="list-group-item list-group-item-action">
-              <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
-              <div class="d-flex w-100 justify-content-between">
+          <a class="list-group-item list-group-item-action">
+            <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}4" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
                 <h5 class="mb-1">{{ map.name }}</h5>
                 <small> {{ map.uploaded_date }} </small>
               </div>
-              <p class="mb-1">{{map.description}}</p>
-              {% if map.color_ramps %}
-              <small>Color Map : {{map.color_ramps}}</small>
-              {% endif %}
-            </a>
+              <div class="collapse" id="{{map.color_ramps}}4">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+          </a>
           {% endfor %}
         </div>
 
         <form action="changedetection" >
-          <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Choose Layer 1</h5>
+          <h5 class="text-muted" style="margin: 2vh;">Choose Layer 1</h5>
           <div class="list-group">
             {% for map in db_layers %}              
-                <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
-                  <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ map.name }}</h5>
-                    <small> {{ map.uploaded_date }} </small>
-                  </div>
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+              <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}5" aria-expanded="true" aria-controls="collapseExample">
+                <div class="d-flex w-100 justify-content-between" id="check">
+                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <div class="collapse" id="{{map.color_ramps}}5">
                   <p class="mb-1">{{map.description}}</p>
                   {% if map.color_ramps %}
                   <small>Color Map : {{map.color_ramps}}</small>
                   {% endif %}
-                </a>
+                </div>
+              </span>
+              </a>
               {% endfor %}
           </div>
 
           <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
           <div class="list-group">
             {% for map in db_layers %}              
-              <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
-                <div class="d-flex w-100 justify-content-between">
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+              <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}6" aria-expanded="true" aria-controls="collapseExample">
+                <div class="d-flex w-100 justify-content-between" id="check">
                   <h5 class="mb-1">{{ map.name }}</h5>
                   <small> {{ map.uploaded_date }} </small>
                 </div>
-                <p class="mb-1">{{map.description}}</p>
-                {% if map.color_ramps %}
-                <small>Color Map : {{map.color_ramps}}</small>
-                {% endif %}
+                <div class="collapse" id="{{map.color_ramps}}6">
+                  <p class="mb-1">{{map.description}}</p>
+                  {% if map.color_ramps %}
+                  <small>Color Map : {{map.color_ramps}}</small>
+                  {% endif %}
+                </div>
+              </span>
               </a>
               {% endfor %}
           </div>
@@ -314,16 +379,20 @@
         <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Layers</h5>
         <div class="list-group">
           {% for map in db_layers %}              
-              <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
-                <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">{{ map.name }}</h5>
-                  <small> {{ map.uploaded_date }} </small>
-                </div>
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}7" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}7">
                 <p class="mb-1">{{map.description}}</p>
                 {% if map.color_ramps %}
                 <small>Color Map : {{map.color_ramps}}</small>
                 {% endif %}
-              </a>
+              </div>
+            </span>
+            </a>
             {% endfor %}
         </div>
 
@@ -332,16 +401,20 @@
         <h5 class="text-muted" style="margin: 2vh">Clustering Output</h5>
         <div class="list-group">
           {% for map in cluster_layers %}              
-              <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
-                <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">{{ map.name }}</h5>
-                  <small> {{ map.uploaded_date }} </small>
-                </div>
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}8" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}8">
                 <p class="mb-1">{{map.description}}</p>
                 {% if map.color_ramps %}
                 <small>Color Map : {{map.color_ramps}}</small>
                 {% endif %}
-              </a>
+              </div>
+            </span>
+            </a>
             {% endfor %}
         </div>
 
@@ -349,15 +422,19 @@
         <h5 class="text-muted" style="margin:2vh;">Change Detection Output</h5>
         <div class="list-group">
           {% for map in change_layers %}              
-            <a class="list-group-item list-group-item-action" data-bs-toggle="list" >
-              <div class="d-flex w-100 justify-content-between">
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}9" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
                 <small> {{ map.uploaded_date }} </small>
               </div>
-              <p class="mb-1">{{map.description}}</p>
-              {% if map.color_ramps %}
-              <small>Color Map : {{map.color_ramps}}</small>
-              {% endif %}
+              <div class="collapse" id="{{map.color_ramps}}9">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
             </a>
             {% endfor %}
         </div>
@@ -519,7 +596,6 @@
 <div class="toast-container position-fixed bottom-0 start-0 p-3 w-75">
 {% if messages %}
   {% for message in messages %}
-  <!-- <div class="position-fixed bottom-0 start-0 p-3 w-75" >  -->
     <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" id="toast_a">
       <div class="toast-header">
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
@@ -539,8 +615,6 @@
         {{message}}
       </div>
     </div>
-  <!-- </div> -->
-
   {% endfor %}
 {% endif %}
 </div>
