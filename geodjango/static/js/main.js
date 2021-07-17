@@ -323,9 +323,6 @@ triggerWMS.forEach((wmsLayerElement) => {
             projection:'ESP:32643',
             opacity: 0.5,
         })
-        // new ol.source.TileWMS({
-        //     url:'http://127.0.0.1:8085/geoserver/App/wms?service=WMS&version=1.1.0&request=GetMap&layers=App%3AHyderabad&bbox=799980.0%2C1890240.0%2C909780.0%2C2000040.0&width=768&height=768&srs=EPSG%3A32643&styles=&format=application%2Fopenlayers3'
-        // })
     });
     wmsLayers.getLayers().push(wmsLayer);
 });
@@ -345,14 +342,6 @@ triggerWMS.forEach((wmsLayerElement)=>{
         
     })
 })
-
-/*
-extent: [636757.681558, 6351042.69913, 728716.389785, 6478379.8966],
-wmsLayerElement.addEventListener('change', function (event) {
-    console.log(this.value)    
-    map.addlayer(wmsLayer);
-})
-*/
 
 // -------------------------------------WMS Cluster Layers--------------------------------
 //------------------------------WMS Cluster functionality-------------------------------
@@ -379,9 +368,6 @@ triggerClusterWMS.forEach((wmsLayerElement) => {
             projection:'ESP:32643',
             opacity: 0.5,
         })
-        // new ol.source.TileWMS({
-        //     url:'http://127.0.0.1:8085/geoserver/App/wms?service=WMS&version=1.1.0&request=GetMap&layers=App%3AHyderabad&bbox=799980.0%2C1890240.0%2C909780.0%2C2000040.0&width=768&height=768&srs=EPSG%3A32643&styles=&format=application%2Fopenlayers3'
-        // })
     });
     wmsLayers.getLayers().push(wmsLayer);
 });
@@ -481,7 +467,3 @@ var map = new ol.Map({
     ]),
     layers: [baseLayerGroup, wmsLayers, wmsClusterLayers, wmsChangeLayers],
 });
-
-/*
-
-*/
