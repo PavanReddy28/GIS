@@ -83,7 +83,7 @@ def search(request):
 
 def cluster(request, id):
 
-    # QGIS Application
+    # ------------------------------QGIS Application----------------------------
     path = env.list('QGIS_PATH')
     print(path[0])
 
@@ -106,7 +106,7 @@ def cluster(request, id):
     # processing.run("saga:kmeansclusteringforgrids",cluster_params)
     # qgs.exitQgis()
 
-    ## USING GDAL TO PERFORM CLUSTERING
+    ## ------------------------USING GDAL TO PERFORM CLUSTERING------------------------
     raster_file = Sentinel.objects.get(id=id)
     file_path = str(raster_file.file)
     
