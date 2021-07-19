@@ -17,6 +17,8 @@ import os
 env = environ.Env()
 environ.Env.read_env()
 
+## ----------------------------Completed------------------------------------------
+
 #  Geoserver Variables
 geo = Geoserver('http://127.0.0.1:'+env('GEOSERVER_PORT')+'/geoserver', username='admin', password='geoserver')
  # layers = geo.get_layers(workspace='App')['layers']['layer']
@@ -37,6 +39,47 @@ def index(request):
         }
 
     return render(request, "index.html", context)
+
+def upload(request):
+
+    name = request.POST['mapName']
+    desc = request.POST['desc']
+    c_ramp = request.POST['c_ramp']
+    raster = request.FILES['raster']
+
+    if c_ramp=='None':
+        file = Sentinel.objects.create(name=name, description=desc, color_ramps=None, file=raster)
+        file.save()
+    else:
+        file = Sentinel.objects.create(name=name, description=desc, color_ramps=c_ramp, file=raster)
+        file.save()
+    messages.add_message(request, messages.SUCCESS, 'File '+name+' is succesfully uploaded!')
+    return HttpResponse('Uploaded')
+
+list = []
+def search(request):
+    print(request)
+    if request.POST:
+        list.clear()
+        print(request.POST)
+        name = request.POST["search"]
+        list.append(name)
+        return HttpResponse("Posted")
+    else:
+        print(list)
+        postresult = Sentinel.objects.filter(name__contains=list[0])
+        l = list.pop()
+        json = []
+        count = 0
+        print(postresult)
+        for i in postresult:
+            print(i.name, i.description, i.color_ramps, i.uploaded_date)
+            json.append({"name":i.name, "description":i.description, "color_ramps":i.color_ramps, "uploaded_date":i.uploaded_date})
+            count+=1
+        print(JsonResponse(json, safe=False))
+        return JsonResponse(json, safe=False)
+
+## -------------------------------------Pending-----------------------------------
 
 def cluster(request, id):
 
@@ -118,42 +161,3 @@ def change(request):
     )
 
     return redirect("/")
-
-def upload(request):
-
-    name = request.POST['mapName']
-    desc = request.POST['desc']
-    c_ramp = request.POST['c_ramp']
-    raster = request.FILES['raster']
-
-    if c_ramp=='None':
-        file = Sentinel.objects.create(name=name, description=desc, color_ramps=None, file=raster)
-        file.save()
-    else:
-        file = Sentinel.objects.create(name=name, description=desc, color_ramps=c_ramp, file=raster)
-        file.save()
-    messages.add_message(request, messages.SUCCESS, 'File '+name+' is succesfully uploaded!')
-    return HttpResponse('Uploaded')
-
-list = []
-def search(request):
-    print(request)
-    if request.POST:
-        list.clear()
-        print(request.POST)
-        name = request.POST["search"]
-        list.append(name)
-        return HttpResponse("Posted")
-    else:
-        print(list)
-        postresult = Sentinel.objects.filter(name__contains=list[0])
-        l = list.pop()
-        json = []
-        count = 0
-        print(postresult)
-        for i in postresult:
-            print(i.name, i.description, i.color_ramps, i.uploaded_date)
-            json.append({"name":i.name, "description":i.description, "color_ramps":i.color_ramps, "uploaded_date":i.uploaded_date})
-            count+=1
-        print(JsonResponse(json, safe=False))
-        return JsonResponse(json, safe=False)
