@@ -47,45 +47,21 @@
 
         <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Base Layers</h5>
         <div class="list-group" id="baseLayers">          
-          <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="openStreetMapStandard">
+
+          <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="worldbasemap">
             <span data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">Open Street Map</h5>
+              <h5 class="mb-1">ESRI StreetMap World 2D</h5>
               <small>1</small>
             </div>
             <div class="collapse" id="collapseExample">
-              <p class="mb-1">Open Layers OSM</p>
+              <p class="mb-1">StreetMap</p>
               <param id="myParam" name="autoplay" value="true">
-              <small>Default</small>
+              <small>World 2D</small>
             </div>
             </span>
           </a>
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="openStreetMapStamenlayer">
-            <span data-bs-toggle="collapse" data-bs-target="#collapseExample1" aria-expanded="true" aria-controls="collapseExample">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">Terrain Open Street Map</h5>
-              <small>2</small>
-            </div>
-            <div class="collapse" id="collapseExample1">
-              <p class="mb-1">Stamen OSM</p>
-              <param id="myParam" name="autoplay" value="true">
-              <small>Terrain</small>
-            </div>
-            </span>
-          </a>
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="OSMStamenWaterLayer">
-            <span data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="true" aria-controls="collapseExample">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">Water Layer Open Street Map</h5>
-              <small>3</small>
-            </div>
-            <div class="collapse" id="collapseExample2">
-              <p class="mb-1">Stamen OSM</p>
-              <param id="myParam" name="autoplay" value="true">
-              <small>Water Layer</small>
-            </div>
-            </span>
-          </a>
+
           <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="aerial">
             <span data-bs-toggle="collapse" data-bs-target="#collapseExample3" aria-expanded="true" aria-controls="collapseExample">
             <div class="d-flex w-100 justify-content-between">
@@ -99,6 +75,35 @@
             </div>
             </span>
           </a>
+
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="openStreetMapStamenlayer">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample1" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Terrain Open Street Map</h5>
+              <small>2</small>
+            </div>
+            <div class="collapse" id="collapseExample1">
+              <p class="mb-1">Stamen OSM</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>Terrain</small>
+            </div>
+            </span>
+          </a>
+
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="OSM">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Open Street Map</h5>
+              <small>3</small>
+            </div>
+            <div class="collapse" id="collapseExample2">
+              <p class="mb-1">OSM</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>OSM</small>
+            </div>
+            </span>
+          </a>
+
         </div>
 
         <h5 class="text-muted" style="margin:2vh;">Choose Raster Layer</h5>
@@ -376,10 +381,10 @@
       <div class="offcanvas-body">
 
         <!-----------------------------1. Download Layers ----------------------------->
-        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Layers</h5>
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Layers - (Click to Download)</h5>
         <div class="list-group">
           {% for map in db_layers %}              
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+          <a class="list-group-item list-group-item-action"  href="{{map.file.url}}" download>
             <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}7" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
@@ -398,10 +403,10 @@
 
         <!---------------------------------2. Download Clustering Output------------------------->
 
-        <h5 class="text-muted" style="margin: 2vh">Clustering Output</h5>
+        <h5 class="text-muted" style="margin: 2vh">Clustering Output - (Click to Download)</h5>
         <div class="list-group">
           {% for map in cluster_layers %}              
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+          <a class="list-group-item list-group-item-action" href="{{map.file.url}}" download>
             <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}8" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
@@ -419,10 +424,10 @@
         </div>
 
         <!--------------------------3. Download Change Detection Output---------------------------------------->
-        <h5 class="text-muted" style="margin:2vh;">Change Detection Output</h5>
+        <h5 class="text-muted" style="margin:2vh;">Change Detection Output - (Click to Download)</h5>
         <div class="list-group">
           {% for map in change_layers %}              
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+          <a class="list-group-item list-group-item-action" href="{{map.file.url}}" download>
             <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}9" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
@@ -439,10 +444,10 @@
             {% endfor %}
         </div>
 
-        <div class="d-grid gap-2" style="margin:3vh">
+        <!-- <div class="d-grid gap-2" style="margin:3vh">
           <Button class="btn btn-primary" href="#" type="submit">Download</Button>
-          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
-        </div>
+          <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button>
+        </div> -->
       </div>
     </div>
   </div>

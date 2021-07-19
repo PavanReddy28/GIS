@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from geo.Geoserver import Geoserver
@@ -7,7 +8,10 @@ from django.contrib import messages
 import environ
 from django.core.mail import send_mail
 import time
-from django.views.generic import ListView
+from sklearn.cluster import KMeans 
+from osgeo import gdal 
+import numpy as np 
+import os
 
 # Initialise environment variables
 env = environ.Env()
@@ -39,6 +43,7 @@ def cluster(request, id):
     # QGIS Application
     path = env.list('QGIS_PATH')
     print(path[0])
+
     # for i in path:
     #     sys.path.append(i)
         
@@ -57,6 +62,32 @@ def cluster(request, id):
     # cluster_params = {'GRIDS':[path],'METHOD':1,'NCLUSTER':3,'NORMALISE':0,'OLDVERSION':0,'UPDATEVIEW':1,'CLUSTER':os.path.join('C:/Users/YVM Reddy/Downloads' , layer.name+'_clustering.sdat'),'STATISTICS':os.path.join('C:/Users/YVM Reddy/Downloads' , layer.name+'_clustering.shp')}
     # processing.run("saga:kmeansclusteringforgrids",cluster_params)
     # qgs.exitQgis()
+
+    ## USING GDAL TO PERFORM CLUSTERING
+    raster_file = Sentinel.objects.get(id=id)
+    file_path = str(raster_file.file)
+    
+    naip_fn = os.path.join(settings.MEDIA_URL, file_path)
+    driverTiff = gdal.GetDriverByName('GTiff') 
+    naip_ds = gdal.Open(naip_fn) 
+    nbands = naip_ds.RasterCount 
+    data = np.empty((naip_ds.RasterXSize*naip_ds.RasterYSize, nbands))
+
+    for i in range(1, nbands+1): 
+        band = naip_ds.GetRasterBand(i).ReadAsArray() 
+        data[:, i-1] = band.flatten()
+
+    km = KMeans(n_clusters=7) 
+    km.fit(data) 
+    km.predict(data)
+    
+    out_dat = km.labels_.reshape((naip_ds.RasterYSize,naip_ds.RasterXSize))
+    clfds = driverTiff.Create(os.path.join(settings.MEDIA_URL, file_path[:11], 'classified_'+raster_file.name+'.tif'), naip_ds.RasterXSize, naip_ds.RasterYSize, 1, gdal.GDT_Float32)
+    clfds.SetGeoTransform(naip_ds.GetGeoTransform())
+    clfds.SetProjection(naip_ds.GetProjection())
+    clfds.GetRasterBand(1).SetNoDataValue(-9999.0)
+    clfds.GetRasterBand(1).WriteArray(out_dat)
+    clfds = None
 
     return redirect("/")
 

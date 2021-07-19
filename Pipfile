@@ -12,6 +12,7 @@ gdal = "*"
 django-environ = "*"
 django-cors-headers = "*"
 celery = "*"
+sklearn = "*"
 
 [dev-packages]
 

@@ -194,20 +194,33 @@ function searchSubmit(event){
                 // ---------------------------------Layer Switcher Functionality-WMS-----------------------------
                 triggerSearchWMS.forEach((wmsLayerElement) => {
                     console.log(wmsLayerElement.value);
+                    sourc = new ol.source.TileWMS({
+                        url: 'http://127.0.0.1:8085/geoserver/App/wms',
+                        params: {'LAYERS': 'App:'+wmsLayerElement.value, 'VERSION':'1.1.0', 'TILED':true},
+                        serverType: 'geoserver',
+                        projection:'ESP:32643',
+                        opacity: 0.5,
+                    })
+                    console.log('WMS Methods', sourc)
                     var wmsLayer = new ol.layer.Tile({
                         title: wmsLayerElement.value,
                         visible:false,
-                        source: new ol.source.TileWMS({
-                            url: 'http://127.0.0.1:8085/geoserver/App/wms',
-                            params: {'LAYERS': 'App:'+wmsLayerElement.value, 'VERSION':'1.1.0', 'TILED':true},
-                            serverType: 'geoserver',
-                            projection:'ESP:32643',
-                            opacity: 0.5,
-                        })
+                        source: sourc
                     });
-                    console.log(wmsLayer)
+                    // var obj = new ol.format.WMSCapabilities().read(response.responseText);
+                    // var capability = obj.capability;
+                    console.log('Layer', wmsLayer)
+                    console.log('Values',wmsLayer.values_)
                     wmsSearchLayers.getLayers().push(wmsLayer);
                 });
+
+                // const parser = new WMSCapabilities();
+                // fetch('data/ogcsample.xml')
+                // .then(response => response.text())
+                // .then(text => {
+                //     const result = parser.read(text);
+                //     document.getElementById('log').innerText = JSON.stringify(result, null, 2);
+                // });   
 
                 map.addLayer(wmsSearchLayers)
 
@@ -220,6 +233,13 @@ function searchSubmit(event){
                             if(wmsLayerTitle === wmsLayerElementValue)
                             {
                                 element.setVisible(!element.get('visible'));
+                                // for (var i=0, len=capability.layers.length; i<len; i++) {
+                                //     var layerObj = capability.layers[i];
+                                //     if (layerObj.name === wmsLayerTitle) {
+                                //         map.zoomToExtent(ol.Bounds.fromArray(layerObj.llbbox));
+                                //         break;
+                                //     }
+                                // }
                             }
                             console.log("After", wmsLayerElementValue, element.get('title'), element.get('visible'));
                         })       
@@ -236,11 +256,18 @@ function searchSubmit(event){
 
 //------------------------------------Base Layer IMplementation----------------------------------
 
-const baselayerOSM = new ol.layer.Tile({
-    source: new ol.source.OSM(),
+const worldbasemap = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url:'http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer/tile/{z}/{y}/{x}.pbf',
+        maxZoom: 20,
+        projection: 'EPSG:4326',
+        tileSize: 512, // the tile size supported by the ArcGIS tile service
+        maxResolution: 180 / 512, // Esri's tile grid fits 180 degrees on one 512 px tile
+        wrapX: true,
+    }),
     visible:true,
     baselayer: true,
-    title: 'openStreetMapStandard'
+    title: 'worldbasemap'
     });
 
 const openStreetMapStamenlayer = new ol.layer.Tile({
@@ -252,13 +279,11 @@ const openStreetMapStamenlayer = new ol.layer.Tile({
     title: 'openStreetMapStamenlayer'
     });
 
-const OSMStamenLayer = new ol.layer.Tile({
-    source: new ol.source.OSM({
-        url:'https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg'
-    }),
+const OSM = new ol.layer.Tile({
+    source: new ol.source.OSM(),
     visible:false,
     baselayer: true,
-    title: 'OSMStamenWaterLayer'
+    title: 'OSM'
     });
 
 const aerial = new ol.layer.Tile({
@@ -273,7 +298,7 @@ const aerial = new ol.layer.Tile({
     
 
 const baseLayerGroup = new ol.layer.Group({
-    layers: [ baselayerOSM, OSMStamenLayer, openStreetMapStamenlayer, aerial ]
+    layers: [ worldbasemap, OSM, openStreetMapStamenlayer, aerial ]
 })
 
 // ---------------------------------Layer Switcher Functionality - Base Maps-----------------------------
@@ -282,18 +307,21 @@ var triggerMap = document.querySelectorAll('#baseLayers > a')
 triggerMap.forEach((baseLayerElement) => {
     baseLayerElement.addEventListener('click', function (event) {
         let link = this.href;
+        console.log(link)
         let value;
         for(let val=link.length-1; val>=0; val--)
         {
             if(link.charAt(val)==='/')
             {
                 value = link.slice(val+1);
+                console.log(value)
                 break;
             }
         }
         
         baseLayerGroup.getLayers().forEach((element, index, array)=>{
             let baseLayerTitle = element.get('title');
+            console.log(value, baseLayerTitle, baseLayerTitle===value, element)
             element.setVisible(baseLayerTitle===value);
         })
     })
@@ -438,6 +466,17 @@ triggerChangeWMS.forEach((wmsLayerElement)=>{
 
 
 // -------------------------------------Original Map Function-----------------------------
+
+// var obj = new OpenLayers.Format.WMSCapabilities().read(response.responseText);
+// var capability = obj.capability;
+// for (var i=0, len=capability.layers.length; i<len; i++) {
+//     var layerObj = capability.layers[i];
+//     if (layerObj.name === myLayerName) {
+//         map.zoomToExtent(OpenLayers.Bounds.fromArray(layerObj.llbbox));
+//         break;
+//     }
+// }
+
 var view = new ol.View({
     center: ol.proj.fromLonLat([78.96, 20.59]),
     zoom: 3,
