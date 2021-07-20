@@ -1,6 +1,5 @@
 from django.contrib.gis import admin
-from .models import Sentinel, WorldBorder, Elevation
+from .models import Sentinel, Elevation
 
-admin.site.register(WorldBorder, admin.GeoModelAdmin)
 admin.site.register(Elevation, admin.GeoModelAdmin)
 admin.site.register(Sentinel, admin.GeoModelAdmin)
