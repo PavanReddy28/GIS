@@ -46,23 +46,9 @@
       <div class="offcanvas-body">
 
         <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Base Layers</h5>
-        <div class="list-group" id="baseLayers">          
-
-          <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="worldbasemap">
-            <span data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">ESRI StreetMap World 2D</h5>
-              <small>1</small>
-            </div>
-            <div class="collapse" id="collapseExample">
-              <p class="mb-1">StreetMap</p>
-              <param id="myParam" name="autoplay" value="true">
-              <small>World 2D</small>
-            </div>
-            </span>
-          </a>
-
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="aerial">
+        <div class="list-group" id="baseLayers">       
+          
+          <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="aerial">
             <span data-bs-toggle="collapse" data-bs-target="#collapseExample3" aria-expanded="true" aria-controls="collapseExample">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">Aerial Satellite View</h5>
@@ -76,10 +62,24 @@
             </span>
           </a>
 
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="worldbasemap">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">ESRI StreetMap World 2D</h5>
+              <small>1</small>
+            </div>
+            <div class="collapse" id="collapseExample">
+              <p class="mb-1">StreetMap</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>World 2D</small>
+            </div>
+            </span>
+          </a>
+
           <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="openStreetMapStamenlayer">
             <span data-bs-toggle="collapse" data-bs-target="#collapseExample1" aria-expanded="true" aria-controls="collapseExample">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">Terrain Open Street Map</h5>
+              <h5 class="mb-1">Terrain OSM</h5>
               <small>2</small>
             </div>
             <div class="collapse" id="collapseExample1">
@@ -469,14 +469,20 @@
           <div class="text-center">
             <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
           </div>  
-          <p class="lead" id="username"><strong>Username : {{ user.username }}</strong></p>
-          <p class="lead" id="f_name"><strong>First Name : {{ user.first_name }}</strong></p>
-          <p class="lead" id="l_name"><strong>Last Name : {{ user.last_name }}</strong></p>
-          <p class="lead" id="user_email"><strong> Email ID : {{ user.email }}</strong></p>
+          <p class="lead" id="username"><strong>Username : </strong>{{ user.username }}</p>
+          <p class="lead" id="f_name"><strong>First Name : </strong>{{ user.first_name }}</p>
+          <p class="lead" id="l_name"><strong>Last Name : </strong>{{ user.last_name }}</p>
+          <p class="lead" id="user_email"><strong> Email ID : </strong>{{ user.email }}</p>
+
+          <h5 style="margin:4vh;"><strong>Settings </strong></h5>
+          <div class="form-check form-switch">
+            <label class="form-check-label" for="flexSwitchCheckChecked">Send a mail when change is detected </label>
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+          </div>
 
           <form method="POST" action="/accounts/logout/">
             {%csrf_token%}
-            <div class="d-grid gap-2" style="margin:3vh">
+            <div class="d-grid gap-2" style="margin:5vh">
               <button class="btn btn-primary" type="submit">Logout</button>
             </div>
           </form>
