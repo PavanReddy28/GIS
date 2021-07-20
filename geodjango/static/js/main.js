@@ -201,26 +201,14 @@ function searchSubmit(event){
                         projection:'ESP:32643',
                         opacity: 0.5,
                     })
-                    console.log('WMS Methods', sourc)
+                    console.log('WMS Methods', sourc.getSouce().getExtent())
                     var wmsLayer = new ol.layer.Tile({
                         title: wmsLayerElement.value,
                         visible:false,
                         source: sourc
                     });
-                    // var obj = new ol.format.WMSCapabilities().read(response.responseText);
-                    // var capability = obj.capability;
-                    console.log('Layer', wmsLayer)
-                    console.log('Values',wmsLayer.values_)
                     wmsSearchLayers.getLayers().push(wmsLayer);
                 });
-
-                // const parser = new WMSCapabilities();
-                // fetch('data/ogcsample.xml')
-                // .then(response => response.text())
-                // .then(text => {
-                //     const result = parser.read(text);
-                //     document.getElementById('log').innerText = JSON.stringify(result, null, 2);
-                // });   
 
                 map.addLayer(wmsSearchLayers)
 
@@ -233,13 +221,6 @@ function searchSubmit(event){
                             if(wmsLayerTitle === wmsLayerElementValue)
                             {
                                 element.setVisible(!element.get('visible'));
-                                // for (var i=0, len=capability.layers.length; i<len; i++) {
-                                //     var layerObj = capability.layers[i];
-                                //     if (layerObj.name === wmsLayerTitle) {
-                                //         map.zoomToExtent(ol.Bounds.fromArray(layerObj.llbbox));
-                                //         break;
-                                //     }
-                                // }
                             }
                             console.log("After", wmsLayerElementValue, element.get('title'), element.get('visible'));
                         })       
@@ -260,19 +241,20 @@ const worldbasemap = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url:'http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer/tile/{z}/{y}/{x}.pbf',
         maxZoom: 20,
+        attributions: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
         projection: 'EPSG:4326',
         tileSize: 512, // the tile size supported by the ArcGIS tile service
         maxResolution: 180 / 512, // Esri's tile grid fits 180 degrees on one 512 px tile
         wrapX: true,
     }),
-    visible:true,
+    visible:false,
     baselayer: true,
     title: 'worldbasemap'
     });
 
 const openStreetMapStamenlayer = new ol.layer.Tile({
     source: new ol.source.OSM({
-        url:'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg'
+        url:'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
     }),
     visible:false,
     baselayer: true,
@@ -290,8 +272,9 @@ const aerial = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         maxZoom: 20,
+        attributions: 'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors, and the GIS User Community',
     }),
-    visible: false,
+    visible: true,
     baselayer:true,
     title:'aerial',
     });
@@ -339,19 +322,66 @@ const wmsLayers = new ol.layer.Group({
 console.log(triggerWMS);
 
 // ---------------------------------Layer Switcher Functionality-WMS-----------------------------
+
+
+var base_url = 'http://127.0.0.1:8085/geoserver/App/wms?'
+var parser = new ol.format.WMSCapabilities();
+var result;
+fetch('http://127.0.0.1:8085/geoserver/App/wms?SERVICE=WMS&VERSION=1.1.0&REQUEST=GetCapabilities').then((response) => {
+    console.log('Response ',response)
+    text =  response.text();
+}).then((text)=>{
+    result = parser.read(text);
+})
+
 triggerWMS.forEach((wmsLayerElement) => {
+
+    var extent_3857;
+    //------------------------------XML HTTP Request-------------------------------------------
+
+    // var xhr1 = new XMLHttpRequest();
+    // xhr1.addEventListener("load", (response) => {
+    //     console.log('Response ',response)
+    //     return response.text();
+    // }).then((text) => {
+    //         var result = parser.read(text);
+    //         console.log(result)
+    //         var extent = result.Capability.Layer.Layer.find(l => l.Name === wmsLayerElement.value).EX_GeographicBoundingBox;
+    //         console.log(extent)
+            // extent_3857 = ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
+    // });
+    // xhr1.open("GET", CORS_PREFIX + base_url + "SERVICE=WMS&VERSION=1.1.0&REQUEST=GetCapabilities")    
+    // xhr1.addEventListener("progress", (oEvent)=> {
+    // });    
+    // xhr1.send()
+
+    //------------------------------------------------------------------
+
+    //---------------------------------------_FETCH API -----------------------------------------
+    // Parse WMS Capabilities to retrieve layer exten
+    console.log(result)
+    if(result)
+    {
+        var extent = result.Capability.Layer.Layer.find(l => l.Name === wmsLayerElement.value).EX_GeographicBoundingBox;
+        console.log(extent)
+        extent_3857 = ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
+    }  
+
     console.log(wmsLayerElement.value);
+    var source1 = new ol.source.TileWMS({
+        url: 'http://127.0.0.1:8085/geoserver/App/wms',
+        params: {'LAYERS': 'App:'+wmsLayerElement.value, 'VERSION':'1.1.0', 'TILED':true},
+        serverType: 'geoserver',
+        projection:'ESP:32643',
+        opacity: 0.5,
+    });
     var wmsLayer = new ol.layer.Tile({
         title: wmsLayerElement.value,
         visible:false,
-        source: new ol.source.TileWMS({
-            url: 'http://127.0.0.1:8085/geoserver/App/wms',
-            params: {'LAYERS': 'App:'+wmsLayerElement.value, 'VERSION':'1.1.0', 'TILED':true},
-            serverType: 'geoserver',
-            projection:'ESP:32643',
-            opacity: 0.5,
-        })
+        source: source1,
+        extent:extent_3857,
     });
+    console.log('WMS Methods', wmsLayer.getExtent(), wmsLayer.getSource())
     wmsLayers.getLayers().push(wmsLayer);
 });
 
@@ -364,6 +394,13 @@ triggerWMS.forEach((wmsLayerElement)=>{
             if(wmsLayerTitle === wmsLayerElementValue)
             {
                 element.setVisible(!element.get('visible'));
+                if(element.getExtent())
+                {
+                    var layerExtent = element.getExtent();
+                    if (layerExtent) {
+                        map.getView().fit(layerExtent);
+                    }
+                }
             }
             console.log("After", wmsLayerElementValue, element.get('title'), element.get('visible'));
         })       
