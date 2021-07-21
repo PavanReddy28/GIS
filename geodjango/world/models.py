@@ -9,13 +9,20 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
-###--------------------------------------___Trial Model -------------------------------
+###--------------------------------------Trial Model : Can be used to store raster files -------------------------------
 class Elevation(models.Model):
     name = models.CharField(max_length=100)
     rast = models.RasterField()
 
 ####-------------------------------------Geoserver Initialized-------------------------------------
 geo = Geoserver('http://127.0.0.1:'+env('GEOSERVER_PORT')+'/geoserver', username='admin', password='geoserver')
+
+
+#####-----------------------------Groups of maps from same location--------------------------
+class Groups(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    def __str__(self):
+        return self.name
 
 #####----------------------------------Sentinel Model - For Raser Files - Upload FUnction ------------------------------
 class Sentinel(models.Model):
@@ -25,8 +32,10 @@ class Sentinel(models.Model):
     file = models.FileField(upload_to='uploads/Raster/%Y/%m/%d')
     color_ramps = models.CharField(max_length=100, choices=COLOR_RAMPS_CHOICES, blank=True)
     uploaded_date = models.DateField(default=datetime.date.today, blank=True)
+    group_name = models.ForeignKey(Groups, on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return self.name
+
 
     #--------------Publishing to geoserver----------------------
 @receiver(post_save, sender=Sentinel)
@@ -60,8 +69,21 @@ def delete_data(sender, instance, **kwargs):
 class ChangeOutputsPNG(models.Model):
 
     name = models.CharField(max_length=50)
-    sentinel_id = models.ForeignKey(Sentinel, on_delete=models.CASCADE)
+    sentinel_1_id = models.ForeignKey(Sentinel, on_delete=models.CASCADE, null=True, related_name='layer_1')
+    sentinel_2_id = models.ForeignKey(Sentinel, on_delete=models.CASCADE, null=True, related_name='layer_2')
     file = models.FileField(upload_to='outputs/change_img/%Y/%m/%d')
+    uploaded_date = models.DateField(default=datetime.date.today, blank=True)
+
+    def __str__(self):
+        return self.name
+
+#######--------------------------------CLustering Output --------------------------------------
+
+class ClusteringOutput(models.Model):
+
+    name = models.CharField(max_length=50)
+    sentinel_id = models.ForeignKey(Sentinel, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='outputs/cluster_output/%Y/%m/%d')
     uploaded_date = models.DateField(default=datetime.date.today, blank=True)
 
     def __str__(self):
