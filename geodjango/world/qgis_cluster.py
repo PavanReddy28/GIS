@@ -21,7 +21,7 @@ def perform_cluster(input_path, output_path):
 
     Processing.initialize()
     input_raster = QgsRasterLayer(input_path,'olayer')
-    out_path = output_path
+    out_path = output_path[:-3]+"sdat"
     cluster_params = {
         'CLUSTER':out_path,
         'GRIDS':[input_raster],
@@ -57,6 +57,12 @@ def perform_cluster(input_path, output_path):
 
     processing.run("saga:kmeansclusteringforrasters",cluster_params,feedback=MyFeedBack())
 
+    convert_params = {
+        'INPUT':out_path,
+        'OUTPUT':output_path
+    }
+    processing.run("gdal:translate", convert_params)
+    
     qgs.exitQgis()
 
     #restore path variables
