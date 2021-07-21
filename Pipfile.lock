@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7007f32472ef6fb810911bcd2c77bd934efc6276b4009d1c82e01df42aebe9da"
+            "sha256": "866223b9934456db19cdbe71d2a98d938b5cde08711ca6b14d76b14cee5084c9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -139,7 +139,7 @@
             "hashes": [
                 "sha256:776ad8f499919d6824b7ba3ae8bd53b2df5d73a14dc047ebc8f33f9507c8dcc5"
             ],
-            "index": "pypi",
+            "markers": "python_version >= '3.6'",
             "version": "==3.3.1"
         },
         "geoserver-rest": {

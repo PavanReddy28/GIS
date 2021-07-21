@@ -3,6 +3,32 @@
 
 {% block content %}
 
+
+<!-- ---------------------------------------Load  Buffer Model ----------------------------------->
+<div class="modal fade" id="load_buffer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="header"></h3>
+      </div>
+      <div class="modal-body" style="margin-left:3vh; margin-right:3vh;">
+        <div id="div_register" style="display:block; padding:2vh; margin:2vh; text-align:center;">
+          <p class="lead" style="display: block;" id="warning"><strong>Process has Started. This will take some time. Please Wait.</strong></p>
+          <div class="d-flex justify-content-center" >
+            <div class="spinner-border" id="spin" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
 <!------------------Navigation Offcanvas------------------------->
 
   <!--------------------------------__Search------------------------------>
@@ -159,10 +185,12 @@
           {% endfor %}
         </div>
 
-        <div class="d-grid gap-2" style="margin:2vh">
-          <Button class="btn btn-primary" href="#" type="submit">Perform Clustering</Button>
-          <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
-        </div>
+        <form method="POST" action="clustering" onsubmit="onClusterSubmit(event)" id="cluster" >
+          <div class="d-grid gap-2" style="margin:2vh">
+            <Button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#load_buffer">Perform Clustering</Button>
+            <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
+          </div>
+        </form>
 
         <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
         <div class="list-group" id="wmsClusterLayers">
@@ -202,7 +230,7 @@
         <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
         <div class="list-group" id="wmsChangeLayers">
           {% for map in change_layers %}
-          <a class="list-group-item list-group-item-action">
+          <a class="list-group-item list-group-item-action" id="{{map.id}}">
             <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}4" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
@@ -220,29 +248,29 @@
           {% endfor %}
         </div>
 
-        <form action="changedetection" >
+        
           <h5 class="text-muted" style="margin: 2vh;">Choose Layer 1</h5>
-          <div class="list-group">
+          <div class="list-group" id="layer1">
             {% for map in db_layers %}              
-            <a class="list-group-item list-group-item-action" data-bs-toggle="list">
-              <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}5" aria-expanded="true" aria-controls="collapseExample">
-                <div class="d-flex w-100 justify-content-between" id="check">
-                  <h5 class="mb-1">{{ map.name }}</h5>
-                  <small> {{ map.uploaded_date }} </small>
-                </div>
-                <div class="collapse" id="{{map.color_ramps}}5">
-                  <p class="mb-1">{{map.description}}</p>
-                  {% if map.color_ramps %}
-                  <small>Color Map : {{map.color_ramps}}</small>
-                  {% endif %}
-                </div>
-              </span>
+              <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+                <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}5" aria-expanded="true" aria-controls="collapseExample">
+                  <div class="d-flex w-100 justify-content-between" id="check">
+                    <h5 class="mb-1">{{ map.name }}</h5>
+                    <small> {{ map.uploaded_date }} </small>
+                  </div>
+                  <div class="collapse" id="{{map.color_ramps}}5">
+                    <p class="mb-1">{{map.description}}</p>
+                    {% if map.color_ramps %}
+                    <small>Color Map : {{map.color_ramps}}</small>
+                    {% endif %}
+                  </div>
+                </span>
               </a>
               {% endfor %}
           </div>
 
           <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
-          <div class="list-group">
+          <div class="list-group" id="layer2">
             {% for map in db_layers %}              
             <a class="list-group-item list-group-item-action" data-bs-toggle="list">
               <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}6" aria-expanded="true" aria-controls="collapseExample">
@@ -260,9 +288,10 @@
               </a>
               {% endfor %}
           </div>
-
+        <form action="changedetection" method="POST" onsubmit="onChangeSubmit(event)" id="change">
+          {%csrf_token%}
           <div class="d-grid gap-2" style="margin:3vh">
-            <Button class="btn btn-primary" type="submit">Detect Change</Button>
+            <Button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#load_buffer">Detect Change</Button>
             <!-- <Button class="btn btn-secondary"  type="reset">Reset</Button> -->
           </div>
         </form>
@@ -302,6 +331,21 @@
             <div class="invalid-feedback">
               Please add a Map Name.
             </div>
+          </div>
+          
+          <p class="lead"><strong>Group Names</strong></p>
+          <div class=" row mb-3">
+            <input class="form-control" list="datalistOptions" name="group_name" id="group_name" placeholder="Type to Find or Add a group.">
+            <datalist id="datalistOptions">
+              {% for element in db_layers %}
+                <option value="{{element.name}}" id="{{element.id}}">
+              {% endfor %}
+            </datalist>
+            <!-- <input type="text" class="form-control" name="group_name" id="group_name" placeholder="Group Name" required>
+            <label for="floatingInput">Group Name</label>
+            <div class="invalid-feedback">
+              Please add a Group Name.
+            </div> -->
           </div>
           
           <div class="row mb-3">
@@ -350,7 +394,7 @@
           <p class="lead" id="d_mapName"><strong></strong></p>
           <p class="lead" id="d_desc"><strong></strong></p>
           <p class="lead" id="d_cRamp"><strong></strong></p>
-          <!-- <p class="lead" id="d_raster"><strong></strong></p> -->
+          <p class="lead" id="d_group_name"><strong></strong></p>
           <div class="progress" id="progress_div">
             <div class="progress-bar" id="progress_bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">25%</div>
           </div>

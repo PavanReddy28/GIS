@@ -31,7 +31,7 @@ if os.name == 'nt':
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ixoei6k!h&ubsn&n(yfa$9zbful+kao1zgged8j*5f0!x-=q-%'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -151,6 +151,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
-EMAIL_HOST_USER = env('EMAIL_ID')
-EMAIL_HOST_PASSWORD = env('EMAIL_PWD')
+EMAIL_HOST_USER = env('HOST_EMAIL_ID')
+EMAIL_HOST_PASSWORD = env('HOST_EMAIL_PWD')
 EMAIL_USE_TLS = True
