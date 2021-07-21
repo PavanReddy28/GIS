@@ -10,9 +10,9 @@ env = environ.Env()
 environ.Env.read_env()
 
 ###--------------------------------------Trial Model : Can be used to store raster files -------------------------------
-class Elevation(models.Model):
-    name = models.CharField(max_length=100)
-    rast = models.RasterField()
+# class Elevation(models.Model):
+#     name = models.CharField(max_length=100)
+#     rast = models.RasterField()
 
 ####-------------------------------------Geoserver Initialized-------------------------------------
 geo = Geoserver('http://127.0.0.1:'+env('GEOSERVER_PORT')+'/geoserver', username='admin', password='geoserver')
@@ -71,8 +71,9 @@ class ChangeOutputsPNG(models.Model):
     name = models.CharField(max_length=50)
     sentinel_1_id = models.ForeignKey(Sentinel, on_delete=models.CASCADE, null=True, related_name='layer_1')
     sentinel_2_id = models.ForeignKey(Sentinel, on_delete=models.CASCADE, null=True, related_name='layer_2')
-    file = models.FileField(upload_to='outputs/change_img/%Y/%m/%d')
+    file = models.FileField(upload_to='outputs/change_outputs/%Y/%m/%d')
     uploaded_date = models.DateField(default=datetime.date.today, blank=True)
+    group_name = models.ForeignKey(Groups, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
