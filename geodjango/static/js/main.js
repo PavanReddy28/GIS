@@ -67,10 +67,12 @@ function onFormSubmit(event){
     formData.append("desc",document.getElementById("desc").value);
     formData.append("c_ramp",document.getElementById("cRamp").value);
     formData.append("raster",document.getElementById("raster").files[0]);
+    formData.append("group_name", document.getElementById("group_name").value)
     
     document.getElementById("d_mapName").innerHTML = "Name : " + document.getElementById("mName").value;
     document.getElementById("d_desc").innerHTML = "Description : " + document.getElementById("desc").value;
     document.getElementById("d_cRamp").innerHTML = "Color Ramp : " + document.getElementById("cRamp").value;
+    document.getElementById("d_group_name").innerHTML = "Group Name : " + document.getElementById("group_name").value
 
     console.log(formData);
 
@@ -118,11 +120,38 @@ function onFormSubmit(event){
     xhr.upload.addEventListener("abort", (ev)=>{
         document.getElementById("mName").innerHTML = "";
         document.getElementById("desc").innerHTML = "";
-        document.getElementById("cRamp").innerHTML = "";
+        // document.getElementById("cRamp").innerHTML = "";
         document.getElementById("raster").innerHTML = "";
     });
 
     xhr.send(formData);
+
+}
+
+//---------------------------------Clustering -------------------------------
+
+const onClusterSubmit = (event)=>{
+    event.preventDefault();
+    document.getElementById("header").innerHTML = "Clustering"
+    var myOffcanvas = document.getElementById('clustering');
+    myOffcanvas.classList.replace("show", "hide")
+
+    var layer1 = document.querySelectorAll('#layer1 > a').filter((e)=> "active" in e.classList)
+    var layer_1;
+    console.log(layer1)
+
+
+}
+
+//-----------------------------------------uploading Change Detection------------------------------------
+
+
+const onChangeSubmit = (event)=>{
+    event.preventDefault();
+    document.getElementById("header").innerHTML = "Change Detection"
+    var myOffcanvas = document.getElementById('change_detection');
+    myOffcanvas.classList.replace("show", "hide")
+
 
 }
 
