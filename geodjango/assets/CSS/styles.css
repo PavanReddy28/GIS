@@ -29,5 +29,26 @@
 
 /* Main Body */
 .main_container{
-  margin-right: 75px;
+  margin-right: 50px;
+}
+
+/* .map {
+  height: 100vh;
+  width: 100%;
+} */
+
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+html, body, #map {
+  height: 100%;
+  /* font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif; */
+}
+
+.lorem {
+  font-style: italic;
+  color: #AAA;
 }

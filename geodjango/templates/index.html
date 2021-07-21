@@ -1,7 +1,680 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
-<p class="h1">BISAG</p>
+
+<!-- ---------------------------------------Load  Buffer Model ----------------------------------->
+<div class="modal fade" id="load_buffer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="header"></h3>
+      </div>
+      <div class="modal-body" style="margin-left:3vh; margin-right:3vh;">
+        <div id="div_register" style="display:block; padding:2vh; margin:2vh; text-align:center;">
+          <p class="lead" style="display: block;" id="warning"><strong>Process has Started. This will take some time. Please Wait.</strong></p>
+          <div class="d-flex justify-content-center" >
+            <div class="spinner-border" id="spin" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!------------------Navigation Offcanvas------------------------->
+
+  <!--------------------------------__Search------------------------------>
+
+  <div class="Search">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="search" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel1">Search</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <form class="form-inline my-2 my-lg-0" method="GET" action="search" onsubmit="searchSubmit(event)">
+          {%csrf_token%}
+          <div class="input-group mb-3">
+            <input id="sea" type="search" name="search1" class="form-control" placeholder="Search" aria-label="search" aria-describedby="button-addon2">
+            <button class="btn btn-outline-primary" type="submit" id="button-addon2">Search</button>
+          </div>
+        </form>
+
+        <div class="d-flex justify-content-center" >
+          <div class="spinner-border" id="spin" style="display: none;" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <div class="list-group" id="search_layers">
+          <h5 class="text-muted" style="margin:2vh;">Use Search to find your Raster layers and Output layers.</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-----------------------------1. Layers------------------------->
+  <div class="Layers">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="layers" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel1">Layers</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Base Layers</h5>
+        <div class="list-group" id="baseLayers">       
+          
+          <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="aerial">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample3" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Aerial Satellite View</h5>
+              <small>4</small>
+            </div>
+            <div class="collapse" id="collapseExample3">
+              <p class="mb-1">Aerial</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>Satellite</small>
+            </div>
+            </span>
+          </a>
+
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="worldbasemap">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">ESRI StreetMap World 2D</h5>
+              <small>1</small>
+            </div>
+            <div class="collapse" id="collapseExample">
+              <p class="mb-1">StreetMap</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>World 2D</small>
+            </div>
+            </span>
+          </a>
+
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="openStreetMapStamenlayer">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample1" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Terrain OSM</h5>
+              <small>2</small>
+            </div>
+            <div class="collapse" id="collapseExample1">
+              <p class="mb-1">Stamen OSM</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>Terrain</small>
+            </div>
+            </span>
+          </a>
+
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="OSM">
+            <span data-bs-toggle="collapse" data-bs-target="#collapseExample2" aria-expanded="true" aria-controls="collapseExample">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Open Street Map</h5>
+              <small>3</small>
+            </div>
+            <div class="collapse" id="collapseExample2">
+              <p class="mb-1">OSM</p>
+              <param id="myParam" name="autoplay" value="true">
+              <small>OSM</small>
+            </div>
+            </span>
+          </a>
+
+        </div>
+
+        <h5 class="text-muted" style="margin:2vh;">Choose Raster Layer</h5>
+        <div class="list-group" id="wmsLayers">
+          {% for map in db_layers %}
+            <a class="list-group-item list-group-item-action">
+              <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}1" aria-expanded="true" aria-controls="collapseExample">
+                <div class="d-flex w-100 justify-content-between" id="check">
+                  <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
+                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <div class="collapse" id="{{map.color_ramps}}1">
+                  <p class="mb-1">{{map.description}}</p>
+                  {% if map.color_ramps %}
+                  <small>Color Map : {{map.color_ramps}}</small>
+                  {% endif %}
+                </div>
+              </span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!----------------------------------------2. Clustering --------------------------------------->
+
+  <div class="clustering">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="clustering" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel2">Clustering</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Original Layers</h5>
+        <div class="list-group">
+          {% for map in db_layers %}
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+            <span data-bs-toggle="collapse" id="span-wms-cluster" data-bs-target="#{{map.color_ramps}}2" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}2">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+            </a>
+          {% endfor %}
+        </div>
+
+        <form method="POST" action="clustering" onsubmit="onClusterSubmit(event)" id="cluster" >
+          <div class="d-grid gap-2" style="margin:2vh">
+            <Button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#load_buffer">Perform Clustering</Button>
+            <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
+          </div>
+        </form>
+
+        <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
+        <div class="list-group" id="wmsClusterLayers">
+          {% for map in cluster_layers %}
+          <a class="list-group-item list-group-item-action">
+            <span data-bs-toggle="collapse" id="span-wms-cluster" data-bs-target="#{{map.color_ramps}}3" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}3">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!------------------------------------3.Change Detection --------------------------------->
+
+  <div class="change_detection">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="change_detection" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel3">Change Detection</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
+        <div class="list-group" id="wmsChangeLayers">
+          {% for map in change_layers %}
+          <a class="list-group-item list-group-item-action" id="{{map.id}}">
+            <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}4" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}4">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+
+        
+          <h5 class="text-muted" style="margin: 2vh;">Choose Layer 1</h5>
+          <div class="list-group" id="layer1">
+            {% for map in db_layers %}              
+              <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+                <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}5" aria-expanded="true" aria-controls="collapseExample">
+                  <div class="d-flex w-100 justify-content-between" id="check">
+                    <h5 class="mb-1">{{ map.name }}</h5>
+                    <small> {{ map.uploaded_date }} </small>
+                  </div>
+                  <div class="collapse" id="{{map.color_ramps}}5">
+                    <p class="mb-1">{{map.description}}</p>
+                    {% if map.color_ramps %}
+                    <small>Color Map : {{map.color_ramps}}</small>
+                    {% endif %}
+                  </div>
+                </span>
+              </a>
+              {% endfor %}
+          </div>
+
+          <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
+          <div class="list-group" id="layer2">
+            {% for map in db_layers %}              
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+              <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}6" aria-expanded="true" aria-controls="collapseExample">
+                <div class="d-flex w-100 justify-content-between" id="check">
+                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <div class="collapse" id="{{map.color_ramps}}6">
+                  <p class="mb-1">{{map.description}}</p>
+                  {% if map.color_ramps %}
+                  <small>Color Map : {{map.color_ramps}}</small>
+                  {% endif %}
+                </div>
+              </span>
+              </a>
+              {% endfor %}
+          </div>
+        <form action="changedetection" method="POST" onsubmit="onChangeSubmit(event)" id="change">
+          {%csrf_token%}
+          <div class="d-grid gap-2" style="margin:3vh">
+            <Button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#load_buffer">Detect Change</Button>
+            <!-- <Button class="btn btn-secondary"  type="reset">Reset</Button> -->
+          </div>
+        </form>
+        
+      </div>      
+    </div>
+  </div>
+
+  <!----------------------------------------------4. Upload Form------------------------------------------->
+
+  <div class="Upload">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="upload" aria-labelledby="offcanvasScrollingLabel">
+
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel1">Upload</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="offcanvas-body" style="margin-left:2vh; margin-right:2vh; margin-bottom:4vh">
+        
+        <form action="upload" method="POST" enctype="" onsubmit="onFormSubmit(event)" class="needs-validation" id="upload" novalidate>
+          {% csrf_token %}
+
+          <p class="lead"><strong>Name*</strong></p>
+          <div class="form-floating row mb-3">
+            <input type="text" class="form-control" name='mapName' id='mName' placeholder="Map Name" required>
+            <label for="floatingInput">Map Name</label>
+            <div class="invalid-feedback">
+              Please add a Map Name.
+            </div>
+          </div>
+        
+          <p class="lead"><strong>Description</strong></p>
+          <div class="form-floating row mb-3">
+            <textarea class="form-control" name='desc' id='desc' placeholder="Map Description" style="height: 100px"></textarea>
+            <label for="floatingTextarea2">Description</label>
+            <div class="invalid-feedback">
+              Please add a Map Name.
+            </div>
+          </div>
+          
+          <p class="lead"><strong>Group Names</strong></p>
+          <div class=" row mb-3">
+            <input class="form-control" list="datalistOptions" name="group_name" id="group_name" placeholder="Type to Find or Add a group.">
+            <datalist id="datalistOptions">
+              {% for element in db_layers %}
+                <option value="{{element.name}}" id="{{element.id}}">
+              {% endfor %}
+            </datalist>
+            <!-- <input type="text" class="form-control" name="group_name" id="group_name" placeholder="Group Name" required>
+            <label for="floatingInput">Group Name</label>
+            <div class="invalid-feedback">
+              Please add a Group Name.
+            </div> -->
+          </div>
+          
+          <div class="row mb-3">
+            <p class="lead"><strong>Choose a Color Ramp</strong></p>
+            <select class="form-select" name='cRamp' id="cRamp" size="5" aria-label="size 5 select example">
+              <option selected>None</option>
+              {% for k in colors %}
+              {% if k.0 == 'RdGy' %}
+              <option value="{{k.0}}" selected>{{k.1}}</option>
+              {% else %}
+              <option value="{{k.0}}">{{k.1}}</option>
+              {% endif %}
+              {% endfor %}
+            </select>            
+          </div>
+
+          <div class="row mb-3">
+            <p class="lead"><strong>Add a Raster File (.GeoTiff)*</strong></p>
+            <input class="form-control" name='raster' accept=".tif, .geotiff, .sld, .shp" type="file" id="raster" required>
+            <div class="invalid-feedback">
+              Please add a Raster File location.
+            </div>
+          </div>
+        
+          <div class="row mb-3 ">
+            <button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#upload_display">Upload</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!----------------------------------- Upload Progress Bar - Modal ---------------------------------->
+  <div class="modal fade" id="upload_display" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Uploading Raster File</h5>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+        <div class="modal-body">
+          <div id="alert-box-dialog" style="display: none;">
+            <div class="alert alert-success" id="alert-box-content" role="alert"></div>
+          </div>
+          <p class="lead" id="d_mapName"><strong></strong></p>
+          <p class="lead" id="d_desc"><strong></strong></p>
+          <p class="lead" id="d_cRamp"><strong></strong></p>
+          <p class="lead" id="d_group_name"><strong></strong></p>
+          <div class="progress" id="progress_div">
+            <div class="progress-bar" id="progress_bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">25%</div>
+          </div>
+          <div class="row form-group">
+            <p class="lead" id="progress_text"><strong></strong></p>
+          </div>
+        </div>
+        <div class="modal-footer" id="abort_button" style="display:block;">
+          <button type="button" id="abort" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+        <div class="modal-footer" id="success_button" style="display:none;">
+          <a href="/">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--------------------------------------------5. Downloading ------------------------------------->
+
+  <div class="download">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="download" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel3">Download</h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+
+        <!-----------------------------1. Download Layers ----------------------------->
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Layers - (Click to Download)</h5>
+        <div class="list-group">
+          {% for map in db_layers %}              
+          <a class="list-group-item list-group-item-action"  href="{{map.file.url}}" download>
+            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}7" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}7">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!---------------------------------2. Download Clustering Output------------------------->
+
+        <h5 class="text-muted" style="margin: 2vh">Clustering Output - (Click to Download)</h5>
+        <div class="list-group">
+          {% for map in cluster_layers %}              
+          <a class="list-group-item list-group-item-action" href="{{map.file.url}}" download>
+            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}8" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}8">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!--------------------------3. Download Change Detection Output---------------------------------------->
+        <h5 class="text-muted" style="margin:2vh;">Change Detection Output - (Click to Download)</h5>
+        <div class="list-group">
+          {% for map in change_layers %}              
+          <a class="list-group-item list-group-item-action" href="{{map.file.url}}" download>
+            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}9" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.color_ramps}}9">
+                <p class="mb-1">{{map.description}}</p>
+                {% if map.color_ramps %}
+                <small>Color Map : {{map.color_ramps}}</small>
+                {% endif %}
+              </div>
+            </span>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- <div class="d-grid gap-2" style="margin:3vh">
+          <Button class="btn btn-primary" href="#" type="submit">Download</Button>
+          <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <!---------------------------------6. User Login---------------------------->
+
+  <div class="user_login">
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="user_login" aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="offcanvasScrollingLabel2"></h3>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
+      </div>
+
+      {% if user.is_authenticated %}
+
+      <div class="offcanvas-body" style="vertical-align:auto; margin-left:3vh; margin-right:3vh; margin-bottom:3vh;">
+        <div id="user_info" style="align-items: center;">
+          <h3 style="text-align: center;"><strong>User Login</strong></h3>
+          <div class="text-center">
+            <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
+          </div>  
+          <p class="lead" id="username"><strong>Username : </strong>{{ user.username }}</p>
+          <p class="lead" id="f_name"><strong>First Name : </strong>{{ user.first_name }}</p>
+          <p class="lead" id="l_name"><strong>Last Name : </strong>{{ user.last_name }}</p>
+          <p class="lead" id="user_email"><strong> Email ID : </strong>{{ user.email }}</p>
+
+          <h5 style="margin:4vh;"><strong>Settings </strong></h5>
+          <div class="form-check form-switch">
+            <label class="form-check-label" for="flexSwitchCheckChecked">Send a mail when change is detected </label>
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+          </div>
+
+          <form method="POST" action="/accounts/logout/">
+            {%csrf_token%}
+            <div class="d-grid gap-2" style="margin:5vh">
+              <button class="btn btn-primary" type="submit">Logout</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+      {% else %}
+
+      <div class="offcanvas-body" style="vertical-align:auto; margin-right:3vh; margin-left:3vh;">
+        <h3 style="text-align: center;"><strong>User Login</strong></h3>
+        <div class="text-center">
+          <img src="{% static 'avatar_icon.png' %}" style="max-width: 20vh; max-height:20vh; margin: 4vh;" >
+        </div>  
+
+        <form class="" id="login" action="/accounts/login/" method="post">
+          {%csrf_token%}
+          <p class="lead"><strong></strong></p>
+          <div class="form-floating row mb-3">
+            <input type="text" class="form-control" name='username1' autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username" placeholder="Username" required>
+            <label for="floatingInput">Username</label>
+            <div class="invalid-feedback">
+              Please add a Username.
+            </div>
+          </div>
+          <div class="form-floating row mb-3">
+            <input type="password" class="form-control" name='password' autocomplete="current-password" required id="id_password" placeholder="Password" required>
+            <label for="floatingInput">Password</label>
+            <div class="invalid-feedback">                 
+            </div>
+          </div>
+          <div class="d-grid gap-2" style="margin:3vh">
+            <Button class="btn btn-primary" type="submit" >Login</Button>
+            <button type="button" id="register_modal" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#register_form">Create an Account.</button>
+          </div>
+        </form>
+
+      </div>
+
+      {% endif %}
+    </div>
+  </div>
+
+  <!--------------------Sign Up Modal ----------------------------->
+  <div class="modal fade" id="register_form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="staticBackdropLabel">Register</h3>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+        <div class="modal-body" style="margin-left:3vh; margin-right:3vh;">
+          <div id="div_register" style="display:block;">
+            <form class="" id="register" action="/accounts/signup/" method="post">
+                {%csrf_token%}
+                <p class="lead"><strong>First Name</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" name='first_name' id='fName' placeholder="First Name" required>
+                  <label for="floatingInput">First Name</label>
+                  <div class="invalid-feedback">
+                    Please add a First Name.
+                  </div>
+                </div>
+                <p class="lead"><strong>Last Name</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" name='last_name' id='lName' placeholder="Last Name" required>
+                  <label for="floatingInput">Last Name</label>
+                  <div class="invalid-feedback">
+                    Please add a Last Name.
+                  </div>
+                </div>
+                <p class="lead"><strong>Username</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="text" class="form-control" maxlength="150" autocapitalize="none" name="username" autocomplete="username" autofocus required id="id_username" placeholder="Username" required>
+                  <label for="floatingInput">Username</label>
+                  <div class="invalid-feedback">
+                    Please add a Username.
+                  </div>
+                </div>
+                <p class="lead"><strong>Email ID</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="email" class="form-control" name='email' id='email' placeholder="Email ID" required>
+                  <label for="floatingInput">Email ID</label>
+                  <div class="invalid-feedback">
+                    Please add your Email ID.
+                  </div>
+                </div>
+                <p class="lead"><strong>Password</strong></p>
+                <div class="form-floating row mb-3">
+                  <input type="password" class="form-control" name="password1" autocomplete="new-password" required id="id_password1" placeholder="Password" required>
+                  <label for="floatingInput">Password</label>
+                  <div class="invalid-feedback">                 
+                  </div>
+                </div>
+                <div class="form-floating row mb-3">
+                  <input type="password" class="form-control" name="password2" autocomplete="new-password" required id="id_password2" placeholder="Confirm Password" required>
+                  <label for="floatingInput">Confirm Password</label>
+                  <div class="invalid-feedback">                 
+                  </div>
+                </div>
+                <div id="alert-box-register" style="display: none;">
+                  <div class="alert alert-danger" id="alert-box-content" role="alert">Passowrds are not matching</div>
+                </div>
+                <div class="d-grid gap-2" style="margin:4vh">
+                  <button class="btn btn-primary" type="submit" id="register_button">Register</button>
+                </div>
+            </form>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+  </div>
+ 
+
+<!----------------------------Openlayers implementation----------------->
+<div id="map" class="map"></div>
+
+<!------------------------------------Toast - Message------------------------------->
+<div class="toast-container position-fixed bottom-0 start-0 p-3 w-75">
+{% if messages %}
+  {% for message in messages %}
+    <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true" id="toast_a">
+      <div class="toast-header">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+          <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#ff0000"></rect></svg>
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+          <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+        {% endif %}
+        {% if message.tags == "error" %}
+          <strong class="me-auto" >Error</strong>
+        {% elif message.tags == "success" %}
+          <strong class="me-auto" >Success</strong>
+        {% endif %}
+        <small>{{time}}</small>
+        <button type="button" class="btn-close" id="toast_btn" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        {{message}}
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
+</div>
+
+<!-------------------------------Map coordinates-------------------------->
+<div class="custom-mouse-position" id="mouse-position"></div>
 
 {% endblock %}

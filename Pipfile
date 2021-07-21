@@ -6,9 +6,12 @@ name = "pypi"
 [packages]
 django = "*"
 psycopg2 = "*"
-pipwin = "*"
 geoserver-rest = "*"
-gdal = "*"
+django-environ = "*"
+django-cors-headers = "*"
+celery = "*"
+sklearn = "*"
+pipwin = "*"
 
 [dev-packages]
 
