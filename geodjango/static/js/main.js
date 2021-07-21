@@ -96,12 +96,6 @@ function onFormSubmit(event){
             document.getElementById("abort_button").style["display"] = "none";
             document.getElementById("progress_bar").innerHTML=""  
             xhr.abort()
-            // setTimeout(()=>{
-            //     document.getElementById("mName").innerHTML = "";
-            //     document.getElementById("desc").innerHTML = "";
-            //     document.getElementById("cRamp").innerHTML = "";
-            //     document.getElementById("raster").innerHTML = "";
-            // }, 2000)
         })
      });
     xhr.upload.addEventListener("load", (ev) => {
