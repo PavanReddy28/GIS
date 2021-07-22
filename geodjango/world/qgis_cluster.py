@@ -1,6 +1,6 @@
 import sys
 
-def perform_cluster(input_path, output_path):
+def perform_cluster(request, input_path, output_path):
     #path modification to disable the virtual env
     prev_sys_path = sys.path
     prev_executable_path  = sys.executable
@@ -68,3 +68,6 @@ def perform_cluster(input_path, output_path):
     #restore path variables
     sys.path = prev_sys_path
     sys.executable = prev_executable_path
+
+    from django.contrib import messages
+    messages.add_message(request, messages.SUCCESS, 'Clustering has been performed Succesfully! Check for output in the Clusterig section.')
