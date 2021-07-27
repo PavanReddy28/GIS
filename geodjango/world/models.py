@@ -30,7 +30,7 @@ class Sentinel(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, blank=True)
     file = models.FileField(upload_to='uploads/Raster/%Y/%m/%d')
-    color_ramps = models.CharField(max_length=100, choices=COLOR_RAMPS_CHOICES, blank=True)
+    color_ramps = models.CharField(max_length=100, choices=COLOR_RAMPS_CHOICES, null=True)
     uploaded_date = models.DateField(default=datetime.date.today, blank=True)
     group_name = models.ForeignKey(Groups, on_delete=models.SET_NULL, null=True)
     def __str__(self):
@@ -66,7 +66,7 @@ def delete_data(sender, instance, **kwargs):
 
 ######-----------------------------------Change Detection Output--------------------------------------
 
-class ChangeOutputsPNG(models.Model):
+class ChangeOutputs(models.Model):
 
     name = models.CharField(max_length=50)
     sentinel_1_id = models.ForeignKey(Sentinel, on_delete=models.CASCADE, null=True, related_name='layer_1')
@@ -77,6 +77,22 @@ class ChangeOutputsPNG(models.Model):
 
     def __str__(self):
         return self.name
+
+
+    #--------------Publishing to geoserver----------------------
+@receiver(post_save, sender=ChangeOutputs)
+def publish_data(sender, instance, created, **kwargs):
+    file = instance.file.path
+    name = instance.name
+    geo.create_coveragestore(file, workspace='App', layer_name=name)
+    geo.create_coveragestyle(file, style_name=name, workspace='App')
+    geo.publish_style(layer_name=name, style_name=name, workspace='App')
+
+    #-------------------Deleting from geoserver------------------------------
+@receiver(post_delete, sender=ChangeOutputs)
+def delete_data(sender, instance, **kwargs):
+    geo.delete_layer(instance.name, 'App')
+
 
 #######--------------------------------CLustering Output --------------------------------------
 
@@ -90,3 +106,16 @@ class ClusteringOutput(models.Model):
     def __str__(self):
         return self.name
 
+    #--------------Publishing to geoserver----------------------
+@receiver(post_save, sender=ClusteringOutput)
+def publish_data(sender, instance, created, **kwargs):
+    file = instance.file.path
+    name = instance.name
+    geo.create_coveragestore(file, workspace='App', layer_name=name)
+    geo.create_coveragestyle(file, style_name=name, workspace='App')
+    geo.publish_style(layer_name=name, style_name=name, workspace='App')
+
+    #-------------------Deleting from geoserver------------------------------
+@receiver(post_delete, sender=ClusteringOutput)
+def delete_data(sender, instance, **kwargs):
+    geo.delete_layer(instance.name, 'App')

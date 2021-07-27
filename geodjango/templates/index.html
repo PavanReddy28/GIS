@@ -13,16 +13,19 @@
       </div>
       <div class="modal-body" style="margin-left:3vh; margin-right:3vh;">
         <div id="div_register" style="display:block; padding:2vh; margin:2vh; text-align:center;">
-          <p class="lead" style="display: block;" id="warning"><strong>Process has Started. This will take some time. Please Wait.</strong></p>
-          <div class="d-flex justify-content-center" >
-            <div class="spinner-border" id="spin" role="status">
-              <span class="visually-hidden">Loading...</span>
+          <p class="lead" style="display: block;" id="warning"><strong>Process has Started. This will take some time. Please check in the respective section after sometime.</strong></p>
+          <div class="d-flex justify-content-center" id="buffer_spinner" style="display:block">
+            <div id="buffer-box-dialog" style="display: none;">
+              <div class="alert alert-success" id="buffer-box-content" role="alert"></div>
             </div>
           </div>
         </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    <div class="modal-footer" id="buffer_close" style="display:none;">
+      <!-- <a type="button" class="btn btn-secondary" href="/"  data-bs-dismiss="modal">Close</a> -->
+      <a href="/">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </a>
     </div>
   </div>
 </div>
@@ -140,7 +143,11 @@
                 <div class="d-flex w-100 justify-content-between" id="check">
                   <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
                   <h5 class="mb-1">{{ map.name }}</h5>
+                  {% if map.group_name %}
+                  <small> Group: {{ map.group_name }} </small>
+                  {%else%}
                   <small> {{ map.uploaded_date }} </small>
+                  {% endif %}
                 </div>
                 <div class="collapse" id="{{map.color_ramps}}1">
                   <p class="mb-1">{{map.description}}</p>
@@ -165,10 +172,30 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="close"></button>
       </div>
       <div class="offcanvas-body">
-        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Original Layers</h5>
-        <div class="list-group">
+
+        <h5 class="text-muted" style="margin-bottom: 2vh; margin-left: 2vh">Output Layers</h5>
+        <div class="list-group" id="wmsClusterLayers">
+          {% for map in cluster_layers %}
+          <a class="list-group-item list-group-item-action">
+            <span data-bs-toggle="collapse" id="span-wms-cluster" data-bs-target="#{{map.name}}1" aria-expanded="true" aria-controls="collapseExample">
+              <div class="d-flex w-100 justify-content-between" id="check">
+                <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
+                <h5 class="mb-1">{{ map.name }}</h5>
+                <small> {{ map.uploaded_date }} </small>
+              </div>
+              <div class="collapse" id="{{map.name}}1">
+                <p class="mb-1">{{map.sentinel_id}}</p>
+                <small>File : {{map.file}}</small>
+              </div>
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+
+        <h5 class="text-muted" style="margin: 2vh;">Original Layers</h5>        
+        <div class="list-group" id="cluster_layers">
           {% for map in db_layers %}
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" id="{{map.id}}">
             <span data-bs-toggle="collapse" id="span-wms-cluster" data-bs-target="#{{map.color_ramps}}2" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
@@ -185,33 +212,12 @@
           {% endfor %}
         </div>
 
-        <form method="POST" action="clustering" onsubmit="onClusterSubmit(event)" id="cluster" >
+        <form onsubmit="onClusterSubmit(event)" id="cluster" >
           <div class="d-grid gap-2" style="margin:2vh">
             <Button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#load_buffer">Perform Clustering</Button>
             <!-- <Button class="btn btn-secondary" href="changedetection/{{map.id}}" type="reset">Reset</Button> -->
           </div>
         </form>
-
-        <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
-        <div class="list-group" id="wmsClusterLayers">
-          {% for map in cluster_layers %}
-          <a class="list-group-item list-group-item-action">
-            <span data-bs-toggle="collapse" id="span-wms-cluster" data-bs-target="#{{map.color_ramps}}3" aria-expanded="true" aria-controls="collapseExample">
-              <div class="d-flex w-100 justify-content-between" id="check">
-                <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
-                <h5 class="mb-1">{{ map.name }}</h5>
-                <small> {{ map.uploaded_date }} </small>
-              </div>
-              <div class="collapse" id="{{map.color_ramps}}3">
-                <p class="mb-1">{{map.description}}</p>
-                {% if map.color_ramps %}
-                <small>Color Map : {{map.color_ramps}}</small>
-                {% endif %}
-              </div>
-            </span>
-          </a>
-          {% endfor %}
-        </div>
 
       </div>
     </div>
@@ -227,55 +233,57 @@
       </div>
       <div class="offcanvas-body">
 
-        <h5 class="text-muted" style="margin:2vh;">Output Layers</h5>
+        <h4 style="margin:2vh;">Output Layers</h4>
         <div class="list-group" id="wmsChangeLayers">
           {% for map in change_layers %}
           <a class="list-group-item list-group-item-action" id="{{map.id}}">
-            <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}4" aria-expanded="true" aria-controls="collapseExample">
+            <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.group_name}}" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <input class="form-check-input me-1" type="checkbox" value="{{ map.name }}">
                 <h5 class="mb-1">{{ map.name }}</h5>
-                <small> {{ map.uploaded_date }} </small>
+                <small> {{ map.group_name }} </small>
               </div>
-              <div class="collapse" id="{{map.color_ramps}}4">
-                <p class="mb-1">{{map.description}}</p>
-                {% if map.color_ramps %}
-                <small>Color Map : {{map.color_ramps}}</small>
-                {% endif %}
+              <div class="collapse" id="{{map.group_name}}">
+                <small class="mb-1">Source Map 1 : {{map.sentinel_1_id}}</small>
+                <small class="mb-1">Source Map 2 : {{map.sentinel_2_id}}</small>
               </div>
             </span>
           </a>
           {% endfor %}
         </div>
 
-        
+        <div style="padding:2vh;">
+        <h4 style="margin:2vh;">Groups</h4>
+        <p>Can perform change detection only on maps from each group</p>
+        {% for group in groups %}
+        <h4>{{group.name}}</h4>
           <h5 class="text-muted" style="margin: 2vh;">Choose Layer 1</h5>
-          <div class="list-group" id="layer1">
-            {% for map in db_layers %}              
-              <a class="list-group-item list-group-item-action" data-bs-toggle="list">
-                <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}5" aria-expanded="true" aria-controls="collapseExample">
-                  <div class="d-flex w-100 justify-content-between" id="check">
-                    <h5 class="mb-1">{{ map.name }}</h5>
-                    <small> {{ map.uploaded_date }} </small>
-                  </div>
-                  <div class="collapse" id="{{map.color_ramps}}5">
-                    <p class="mb-1">{{map.description}}</p>
-                    {% if map.color_ramps %}
-                    <small>Color Map : {{map.color_ramps}}</small>
-                    {% endif %}
-                  </div>
-                </span>
+          <div class="list-group" id="change_layers_1">
+            {% for map in group.list %}              
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list" id="{{map.id}}">
+              <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}90" aria-expanded="true" aria-controls="collapseExample">
+                <div class="d-flex w-100 justify-content-between" id="check">
+                  <h5 class="mb-1">{{ map }}</h5>
+                  <small> {{ map.uploaded_date }} </small>
+                </div>
+                <div class="collapse" id="{{map.color_ramps}}90">
+                  <p class="mb-1">{{map.description}}</p>
+                  {% if map.color_ramps %}
+                  <small>Color Map : {{map.color_ramps}}</small>
+                  {% endif %}
+                </div>
+              </span>
               </a>
               {% endfor %}
           </div>
 
           <h5 class="text-muted" style="margin:2vh;">Choose Layer 2</h5>
-          <div class="list-group" id="layer2">
-            {% for map in db_layers %}              
-            <a class="list-group-item list-group-item-action" data-bs-toggle="list">
+          <div class="list-group" id="change_layers_2">
+            {% for map in group.list %}              
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list" id="{{map.id}}">
               <span data-bs-toggle="collapse" id="span-wms-change" data-bs-target="#{{map.color_ramps}}6" aria-expanded="true" aria-controls="collapseExample">
                 <div class="d-flex w-100 justify-content-between" id="check">
-                  <h5 class="mb-1">{{ map.name }}</h5>
+                  <h5 class="mb-1">{{ map }}</h5>
                   <small> {{ map.uploaded_date }} </small>
                 </div>
                 <div class="collapse" id="{{map.color_ramps}}6">
@@ -288,13 +296,14 @@
               </a>
               {% endfor %}
           </div>
-        <form action="changedetection" method="POST" onsubmit="onChangeSubmit(event)" id="change">
-          {%csrf_token%}
+        {% endfor %}
+        <form onsubmit="onChangeSubmit(event)" id="change">
           <div class="d-grid gap-2" style="margin:3vh">
             <Button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#load_buffer">Detect Change</Button>
             <!-- <Button class="btn btn-secondary"  type="reset">Reset</Button> -->
           </div>
         </form>
+      </div>
         
       </div>      
     </div>
@@ -337,7 +346,7 @@
           <div class=" row mb-3">
             <input class="form-control" list="datalistOptions" name="group_name" id="group_name" placeholder="Type to Find or Add a group.">
             <datalist id="datalistOptions">
-              {% for element in db_layers %}
+              {% for element in group_names %}
                 <option value="{{element.name}}" id="{{element.id}}">
               {% endfor %}
             </datalist>
@@ -432,7 +441,11 @@
             <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}7" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
-                <small> {{ map.uploaded_date }} </small>
+                {% if map.group_name %}
+                  <small> Group: {{ map.group_name }} </small>
+                  {%else%}
+                  <small> {{ map.uploaded_date }} </small>
+                {% endif %}
               </div>
               <div class="collapse" id="{{map.color_ramps}}7">
                 <p class="mb-1">{{map.description}}</p>
@@ -457,10 +470,7 @@
                 <small> {{ map.uploaded_date }} </small>
               </div>
               <div class="collapse" id="{{map.color_ramps}}8">
-                <p class="mb-1">{{map.description}}</p>
-                {% if map.color_ramps %}
-                <small>Color Map : {{map.color_ramps}}</small>
-                {% endif %}
+                <p class="mb-1">Source Map: {{map.sentinel_id}}</p>
               </div>
             </span>
             </a>
@@ -472,16 +482,14 @@
         <div class="list-group">
           {% for map in change_layers %}              
           <a class="list-group-item list-group-item-action" href="{{map.file.url}}" download>
-            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.color_ramps}}9" aria-expanded="true" aria-controls="collapseExample">
+            <span data-bs-toggle="collapse" id="span-wms" data-bs-target="#{{map.group_name}}" aria-expanded="true" aria-controls="collapseExample">
               <div class="d-flex w-100 justify-content-between" id="check">
                 <h5 class="mb-1">{{ map.name }}</h5>
-                <small> {{ map.uploaded_date }} </small>
+                <small> {{ map.group_name }} </small>
               </div>
-              <div class="collapse" id="{{map.color_ramps}}9">
-                <p class="mb-1">{{map.description}}</p>
-                {% if map.color_ramps %}
-                <small>Color Map : {{map.color_ramps}}</small>
-                {% endif %}
+              <div class="collapse" id="{{map.group_name}}">
+                <small class="mb-1">Source Map 1 : {{map.sentinel_1_id}}</small>
+                <small class="mb-1">Source Map 2 : {{map.sentinel_2_id}}</small>
               </div>
             </span>
             </a>
@@ -600,7 +608,7 @@
                 </div>
                 <p class="lead"><strong>Username</strong></p>
                 <div class="form-floating row mb-3">
-                  <input type="text" class="form-control" maxlength="150" autocapitalize="none" name="username" autocomplete="username" autofocus required id="id_username" placeholder="Username" required>
+                  <input type="text" class="form-control" maxlength="150" autocapitalize="none" name="username" autocomplete="username" autofocus required id="signup_id_username" placeholder="Username" required>
                   <label for="floatingInput">Username</label>
                   <div class="invalid-feedback">
                     Please add a Username.
