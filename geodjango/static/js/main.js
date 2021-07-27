@@ -129,12 +129,34 @@ const onClusterSubmit = (event)=>{
     document.getElementById("header").innerHTML = "Clustering"
     var myOffcanvas = document.getElementById('clustering');
     myOffcanvas.classList.replace("show", "hide")
-
-    var layer1 = document.querySelectorAll('#layer1 > a').filter((e)=> "active" in e.classList)
-    var layer_1;
-    console.log(layer1)
-
-
+    var layer = [].slice.call(document.querySelectorAll('#cluster_layers a[data-bs-toggle="list"]'))
+    var layer_id;
+    layer.forEach((e)=> {
+        e.classList.forEach(ev=>{
+            if(ev=="active")
+            {
+                layer_id = e.id
+            }
+        })
+    })
+    if(layer_id)
+    {
+        var formData = new FormData()
+        formData.append("csrfmiddlewaretoken", document.getElementsByName('csrfmiddlewaretoken')[0].value)
+        formData.append("cluster_id", layer_id)
+        var xhr=new XMLHttpRequest();
+        xhr.open("POST","http://127.0.0.1:8000/cluster",true);
+        xhr.upload.addEventListener("load", (ev) => {
+            console.log("done cluster")
+            document.getElementById("buffer_close").style["display"] = "block"
+        })
+        xhr.send(formData)
+    }
+    else{
+        document.getElementById("warning").innerHTML="Please choose a layer."
+        document.getElementById("buffer_close").style["display"] = "block"
+    }
+    
 }
 
 //-----------------------------------------uploading Change Detection------------------------------------
@@ -145,6 +167,53 @@ const onChangeSubmit = (event)=>{
     document.getElementById("header").innerHTML = "Change Detection"
     var myOffcanvas = document.getElementById('change_detection');
     myOffcanvas.classList.replace("show", "hide")
+
+    var layer1 = [].slice.call(document.querySelectorAll('#change_layers_1 a[data-bs-toggle="list"]'))
+    var layer_id1;
+    console.log("layer1 ", layer1)
+    layer1.forEach((e)=> {
+        e.classList.forEach(ev=>{
+            if(ev=="active")
+            {
+                layer_id1 = e.id
+                console.log(layer_id1)
+            }
+        })
+    })
+
+    var layer2 = [].slice.call(document.querySelectorAll('#change_layers_2 a[data-bs-toggle="list"]'))
+    var layer_id2;
+    console.log("layer2 ", layer2)
+    layer2.forEach((e)=> {
+        e.classList.forEach(ev=>{
+            if(ev=="active")
+            {
+                layer_id2 = e.id
+                console.log(layer_id2)
+            }
+        })
+    })
+
+    if(layer_id1 && layer_id2)
+    {
+        var formData = new FormData()
+        formData.append("csrfmiddlewaretoken", document.getElementsByName('csrfmiddlewaretoken')[0].value)
+        formData.append("change_id1", layer_id1)
+        formData.append("change_id2", layer_id2)
+        var xhr=new XMLHttpRequest();
+        xhr.open("POST","http://127.0.0.1:8000/change",true);
+        xhr.upload.addEventListener("load", (ev) => {
+            console.log("done change")
+            document.getElementById("buffer_close").style["display"] = "block"
+
+        })
+        xhr.send(formData)
+    }
+    else{
+        document.getElementById("warning").innerHTML="Please choose a layer."
+        document.getElementById("buffer_close").style["display"] = "block"
+    }
+    
 
 
 }
